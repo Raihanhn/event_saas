@@ -19,13 +19,15 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-4 md:p-6 h-screen space-y-6 max-w-7xl mx-auto">
+    <div  className={`p-4 md:p-6 h-screen space-y-6 max-w-7xl mx-auto
+        ${theme === "dark" ? "bg-[#111827] text-white" : " text-gray-900"}
+      `}>
       {/* PAGE TITLE */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-semibold">
           Settings
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
           Manage your account and subscription
         </p>
       </div>
@@ -33,7 +35,11 @@ export default function Settings() {
       {/* GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ADMIN INFO */}
-        <div className="lg:col-span-2 rounded-2xl border p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div  className={`lg:col-span-2 rounded-2xl border p-6
+            ${theme === "dark"
+              ? "bg-[#1F2937] border-gray-700"
+              : "bg-[#F3F4F6] border-gray-200"}
+          `}>
           <h2 className="text-lg font-semibold mb-4">Admin Information</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -50,7 +56,11 @@ export default function Settings() {
         </div>
 
         {/* APPEARANCE */}
-        <div className="rounded-2xl border p-6 bg-white dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
+        <div className={`rounded-2xl border p-6
+        ${theme === "dark"
+                ? "bg-[#1F2937] border-gray-700 text-white "
+                : " bg-[#F3F4F6] border-gray-200 text-black"}
+         flex flex-col justify-between`}>
           <h2 className="text-lg font-semibold mb-4">Appearance</h2>
 
           <button
@@ -76,7 +86,11 @@ export default function Settings() {
         </div>
 
         {/* SUBSCRIPTION */}
-        <div className="lg:col-span-2 rounded-2xl border p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div className={`lg:col-span-2 rounded-2xl border p-6
+        ${theme === "dark"
+          ? "bg-[#1F2937] border-gray-700 text-white "
+          : " bg-[#F3F4F6] border-gray-200 text-black"}
+         `}>
           <h2 className="text-lg font-semibold mb-4">Subscription</h2>
 
           <button
@@ -88,12 +102,18 @@ export default function Settings() {
         </div>
 
         {/* ACCOUNT */}
-        <div className="rounded-2xl border p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div className={`rounded-2xl border p-6
+         ${theme === "dark" ? "bg-[#1F2937] border-gray-700 text-white "
+          : " bg-[#F3F4F6] border-gray-200 text-black"}`}>
           <h2 className="text-lg font-semibold mb-4">Account</h2>
 
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl transition
+              ${theme === "dark"
+                ? "bg-[#374151] hover:bg-[#4B5563]"
+                : "bg-gray-200 hover:bg-gray-300"}
+            `}
           >
             <LogOut size={18} />
             Logout
