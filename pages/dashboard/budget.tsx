@@ -10,6 +10,7 @@ import BudgetPieChart from "@/modules/budgets/ui/BudgetPieChart";
 import BudgetLineChart from "@/modules/budgets/ui/BudgetLineChart";
 import VendorOverview from "@/modules/budgets/ui/VendorOverview";
 import ActualBudgetPieChart from "@/modules/budgets/ui/ActualBudgetPieChart";
+import { useThemeContext } from "@/context/ThemeContext";
 
 interface EventDetails {
   _id: string;
@@ -41,6 +42,7 @@ export default function BudgetPage() {
   const [budgets, setBudgets] = useState<BudgetItem[]>([]);
   const [vendors, setVendors] = useState<VendorOption[]>([]);
   const [loading, setLoading] = useState(false);
+  const { theme } = useThemeContext();
 
   // -----------------------
   // Fetch events & vendors
@@ -251,14 +253,16 @@ export default function BudgetPage() {
 
 
   return (
-    <div className="p-6 h-screen space-y-6  ">
+    <div  className={`p-6 h-screen space-y-6
+        ${theme === "dark" ? "bg-[#111827] text-gray-200" : "bg-white text-gray-900"}
+      `}>
       {/* <h1 className="text-2xl font-semibold">Event Budgets</h1> */}
 
       {/* Top Header Row */}
       {/* ===================== */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         {/* Left: Title */}
-        <h1 className="text-2xl font-semibold text-gray-800">Event Budgets</h1>
+        <h1 className="text-2xl font-semibold ">Event Budgets</h1>
 
         {/* Right: Event Selector */}
         <EventSelector
@@ -271,8 +275,10 @@ export default function BudgetPage() {
       {/* Clients Row */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         {eventDetails && (
-          <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-xl shadow">
-            <span className=" font-medium text-gray-600">Clients:</span>
+          <div className={`flex items-center gap-2 p-2 rounded-xl shadow
+            ${theme === "dark" ? "bg-[#1F2937]" : "bg-gray-50"}
+          `}>
+            <span className=" font-medium opacity-70">Clients:</span>
 
             {eventDetails?.clients?.map((c, idx) => (
               <div key={idx} className="flex items-center gap-2 capitalize">
@@ -293,7 +299,7 @@ export default function BudgetPage() {
                   </div>
                 )}
                 {/* Name */}
-                <span className="font-medium text-gray-700">{c.name}</span>
+                <span className="font-medium ">{c.name}</span>
               </div>
             ))}
           </div>
@@ -327,9 +333,9 @@ export default function BudgetPage() {
         ).map((c, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-2xl shadow p-4 flex flex-col justify-between"
+            className={` ${theme === "dark" ? "bg-[#1F2937]" : "bg-[#F3F4F6]"} rounded-2xl shadow p-4 flex flex-col justify-between`}
           >
-            <p className="text-gray-500">{c.title}</p>
+            <p className="opacity-70">{c.title}</p>
             <p className="text-xl font-bold mt-2">{c.value}</p>
             {c.title === "Actual Spent" && eventDetails && (
               <div className="mt-2 w-full bg-gray-200 rounded-full h-3">

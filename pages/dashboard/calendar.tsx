@@ -203,8 +203,6 @@ export default function CalendarPage() {
     }
   };
 
-  // if (loading)
-  //   return <p className="text-sm text-gray-500">Loading calendar…</p>;
 
   return (
     <div className={`${theme === "dark" ? " text-white" : " text-gray-900"} space-y-4 h-screen`}>
