@@ -111,7 +111,7 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
           required
         />
 
-        <label>Total Budget</label>
+        <label className="block text-sm text-gray-600 mb-1">Total Budget</label>
         <input
           type="number"
           value={totalBudget}
@@ -119,7 +119,9 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
           placeholder="Enter total budget"
           className="w-full border border-gray-300 focus:outline-none px-3 py-2 rounded"
         />
-
+           <label className="block text-sm text-gray-600 mb-1">
+              Select Client
+            </label>
         <Select
           isMulti
           options={clients.map((c) => ({ value: c._id, label: c.name }))}
