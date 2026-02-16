@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { CalendarItem } from "../calendar.types";
 import Select from "react-select";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export default function EventQuickEdit({
   item,
@@ -27,6 +28,8 @@ export default function EventQuickEdit({
   });
   const [loading, setLoading] = useState(false);
   console.log("ITEM RECEIVED:", item);
+
+  const { theme } = useThemeContext();
 
 
   // Sync props to local state whenever item changes
@@ -73,10 +76,14 @@ export default function EventQuickEdit({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="relative bg-white dark:bg-black rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto space-y-4">
+      <div className={`relative rounded-xl p-6 w-[480px] max-h-[80vh] overflow-y-auto space-y-4
+          ${theme === "dark" ? "bg-[#1F2937] text-white" : "bg-white text-gray-900"}
+        `}>
         {loading && (
-          <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-50 rounded-xl">
-            <p className="text-sm text-gray-700">Saving...</p>
+          <div className={`absolute inset-0 flex items-center justify-center z-50 rounded-xl
+              ${theme === "dark" ? "bg-black/60" : "bg-white/70"}
+            `}>
+            <p className="text-sm ">Saving...</p>
           </div>
         )}
 
@@ -88,7 +95,13 @@ export default function EventQuickEdit({
           onChange={(e) =>
             setLocalItem((p) => ({ ...p, title: e.target.value }))
           }
-          className="border rounded px-2 py-1 w-full text-sm"
+          className={`border rounded px-2 py-1 w-full text-sm outline-none
+            ${
+              theme === "dark"
+                ? "bg-[#374151] border-gray-600 text-white placeholder-gray-400"
+                : "bg-white border-gray-300 text-gray-900"
+            }
+          `}
         />
 
         {/* Time */}
@@ -99,7 +112,13 @@ export default function EventQuickEdit({
             onChange={(e) =>
               setLocalItem((p) => ({ ...p, startTime: e.target.value }))
             }
-            className="border rounded px-2 py-1 w-full text-sm"
+            className={`border rounded px-2 py-1 w-full text-sm outline-none
+              ${
+                theme === "dark"
+                  ? "bg-[#374151] border-gray-600 text-white"
+                  : "bg-white border-gray-300 text-gray-900"
+              }
+            `}
           />
           <input
             type="time"
@@ -107,13 +126,21 @@ export default function EventQuickEdit({
             onChange={(e) =>
               setLocalItem((p) => ({ ...p, endTime: e.target.value }))
             }
-            className="border rounded px-2 py-1 w-full text-sm"
+            className={`border rounded px-2 py-1 w-full text-sm outline-none
+              ${
+                theme === "dark"
+                  ? "bg-[#374151] border-gray-600 text-white"
+                  : "bg-white border-gray-300 text-gray-900"
+              }
+            `}
           />
         </div>
 
         {/* Vendors */}
         <div>
-          <p className="text-xs mb-1">Select Vendors</p>
+          <p className={`text-xs mb-1 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>Select Vendors</p>
           <Select
             isMulti
             options={allVendors.map((v) => ({ value: v.id, label: v.name }))}
@@ -137,6 +164,31 @@ export default function EventQuickEdit({
             }}
             placeholder="Select vendors..."
             className="text-sm"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor:
+                  theme === "dark" ? "#374151" : "#ffffff",
+                borderColor:
+                  theme === "dark" ? "#4B5563" : "#D1D5DB",
+                color: theme === "dark" ? "#ffffff" : "#111827",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor:
+                  theme === "dark" ? "#1F2937" : "#ffffff",
+                color: theme === "dark" ? "#ffffff" : "#111827",
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor:
+                  theme === "dark" ? "#4B5563" : "#E5E7EB",
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: theme === "dark" ? "#ffffff" : "#111827",
+              }),
+            }}
           />
         </div>
 
@@ -153,7 +205,9 @@ export default function EventQuickEdit({
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="text-sm opacity-70 transition transform hover:scale-105 cursor-pointer"
+              className={`text-sm opacity-70 transition transform hover:scale-105 cursor-pointer
+                ${theme === "dark" ? "text-gray-300" : "text-gray-700"}
+              `}
               disabled={loading}
             >
               Cancel
