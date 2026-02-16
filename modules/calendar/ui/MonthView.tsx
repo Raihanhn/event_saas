@@ -5,6 +5,7 @@
 import { CalendarItem } from "../calendar.types";
 import { startOfMonth, startOfWeek, addDays, format } from "date-fns";
 import { PHASE_COLORS } from "../calendar.constants";
+import { useThemeContext } from "@/context/ThemeContext";
 import {
   DndContext,
   PointerSensor,
@@ -67,7 +68,8 @@ export default function MonthView({
   const today = new Date();
   const monthStart = startOfMonth(today);
   const weekStart = startOfWeek(monthStart, { weekStartsOn: 0 });
-  const days = Array.from({ length: 42 }, (_, i) => addDays(weekStart, i)); // 6 weeks
+  const days = Array.from({ length: 42 }, (_, i) => addDays(weekStart, i));
+    const { theme } = useThemeContext();
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } })
@@ -95,7 +97,9 @@ export default function MonthView({
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-       <div className="overflow-hidden border border-gray-300 rounded-lg">
+       <div className={`overflow-hidden border rounded-lg
+          ${theme === "dark" ? "border-gray-600" : "border-gray-300"}
+        `}>
       <div className="grid grid-cols-7 grid-rows-6 ">
         {days.map((day) => {
           const key = dateKey(day);
@@ -114,12 +118,26 @@ export default function MonthView({
             <div
               key={key}
               ref={setNodeRef}
-              className={`relative min-h-[110px] p-1 pointer-events-auto ${dayBg} ${
-                isOver ? "bg-blue-100" : ""
-              }  border border-gray-200 `}
+              className={`relative min-h-[110px] p-1 pointer-events-auto
+                  ${dayBg}
+                  ${
+                    isOver
+                      ? theme === "dark"
+                        ? "bg-blue-900/40"
+                        : "bg-blue-100"
+                      : ""
+                  }
+                  ${
+                    theme === "dark"
+                      ? "border border-gray-700 text-white"
+                      : "border border-gray-200 text-gray-900"
+                  }
+                `}
             >
               {/* Date */}
-              <div className="text-xs font-medium mb-1">{format(day, "d")}</div>
+              <div className={`text-xs font-medium mb-1
+                    ${theme === "dark" ? "text-gray-300" : "text-gray-700"}
+                  `}>{format(day, "d")}</div>
 
               {/* Tasks */}
               <div className="space-y-1">
