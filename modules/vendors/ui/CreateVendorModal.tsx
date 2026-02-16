@@ -1,5 +1,6 @@
 //modules/vendors/ui/CreateVendorModal.tsx
 import { useState } from "react";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export default function CreateVendorModal({ onClose, setVendors }: any) {
   const [form, setForm] = useState({
@@ -10,6 +11,7 @@ export default function CreateVendorModal({ onClose, setVendors }: any) {
   });
 
   const [loading, setLoading] = useState(false);
+  const { theme } = useThemeContext();
 
   const submit = async () => {
     setLoading(true);
@@ -42,14 +44,26 @@ export default function CreateVendorModal({ onClose, setVendors }: any) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-      <div className="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+      <div className={`w-full max-w-md rounded-xl p-6 space-y-4
+          ${
+            theme === "dark"
+              ? "bg-[#1F2937] text-white"
+              : "bg-white text-gray-900"
+          }
+        `}>
         <h2 className="text-lg font-semibold">Add vendor</h2>
 
         {["name", "email", "phone", "role"].map((field) => (
           <input
             key={field}
             placeholder={field}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none"
+            className={`w-full rounded-lg px-3 py-2 outline-none border
+              ${
+                theme === "dark"
+                  ? "bg-[#111827] border-gray-600 text-white placeholder-gray-400"
+                  : "bg-white border-gray-300 text-gray-900"
+              }
+            `}
             onChange={(e) => setForm({ ...form, [field]: e.target.value })}
           />
         ))}
@@ -57,7 +71,13 @@ export default function CreateVendorModal({ onClose, setVendors }: any) {
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="transition transform hover:scale-105 cursor-pointer border border-gray-300 focus:outline-none rounded-lg px-4 py-2"
+            className={`transition transform hover:scale-105 cursor-pointer rounded-lg px-4 py-2 border
+              ${
+                theme === "dark"
+                  ? "border-gray-600 text-gray-300 hover:bg-gray-700"
+                  : "border-gray-300 text-gray-700"
+              }
+            `}
           >
             Cancel
           </button>

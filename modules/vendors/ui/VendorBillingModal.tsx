@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable"; 
 import "jspdf-autotable";
+import { useThemeContext } from "@/context/ThemeContext";
 
 interface VendorBillingModalProps {
   vendor: any;
@@ -24,6 +25,7 @@ export default function VendorBillingModal({ vendor, onClose }: VendorBillingMod
   const [loading, setLoading] = useState(false);
 
   const selectedEvent = events.find((e) => e._id === selectedEventId);
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     async function fetchEvents() {
@@ -118,20 +120,42 @@ export default function VendorBillingModal({ vendor, onClose }: VendorBillingMod
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-full max-w-md p-6 space-y-4 relative">
+      <div className={`relative w-full max-w-md p-6 space-y-4 rounded-xl
+          ${
+            theme === "dark"
+              ? "bg-[#1F2937] text-white"
+              : "bg-white text-gray-900"
+          }
+        `}>
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          className={`absolute top-3 right-3 transition
+            ${
+              theme === "dark"
+                ? "text-gray-400 hover:text-white"
+                : "text-gray-500 hover:text-gray-800"
+            }
+          `}
         >
           ✕
         </button>
         <h2 className="text-lg font-semibold">Generate Billing</h2>
 
-        <label className="block text-sm text-gray-600">Select Event</label>
+        <label className={`block text-sm
+            ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }
+          `}>Select Event</label>
         <select
           value={selectedEventId}
           onChange={(e) => setSelectedEventId(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none"
+          className={`w-full rounded-lg px-3 py-2 outline-none border
+            ${
+              theme === "dark"
+                ? "bg-[#111827] border-gray-600 text-white"
+                : "bg-white border-gray-300 text-gray-900"
+            }
+          `}
         >
           {events.map((e) => (
             <option key={e._id} value={e._id}>
