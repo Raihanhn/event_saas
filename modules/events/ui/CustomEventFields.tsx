@@ -1,6 +1,7 @@
 // planovae/modules/events/ui/CustomEventFields.tsx
 import { useState } from "react";
 import { EventItem } from "./EventItemTable";
+import { useThemeContext } from "@/context/ThemeContext";
 
 interface CustomEventFieldsProps {
   items: EventItem[];
@@ -28,6 +29,8 @@ export default function CustomEventFields({ items, setItems }: CustomEventFields
     setItems([...items, newItem]);
   };
 
+  const { theme } = useThemeContext();
+
   // Update a field in an item
   const updateItem = (id: string, field: keyof EventItem, value: any) => {
     setItems(items.map((i) => (i._id === id ? { ...i, [field]: value } : i)));
@@ -39,20 +42,20 @@ export default function CustomEventFields({ items, setItems }: CustomEventFields
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 space-y-3">
+    <div className={`border rounded-lg p-4 space-y-3 ${theme === "dark" ? "border-gray-700 bg-[#111827] text-white" : "border-gray-300 bg-white text-gray-900"}`}>
       <h3 className="font-semibold">Custom Event Setup</h3>
 
       {items.map((item) => (
         <div key={item._id} className="flex flex-col md:flex-row gap-2 items-start md:items-center">
           <input
-            className="flex-1 border border-gray-300 px-3 py-2 rounded"
+            className={`flex-1 border px-3 py-2 rounded ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white" : "border-gray-300 bg-white text-gray-900"}`}
             placeholder="Task / Budget title"
             value={item.title}
             onChange={(e) => updateItem(item._id, "title", e.target.value)}
           />
 
           <select
-            className="border border-gray-300 px-2 py-1 rounded"
+             className={`border px-2 py-1 rounded ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white" : "border-gray-300 bg-white text-gray-900"}`}
             value={item.phase}
             onChange={(e) => updateItem(item._id, "phase", e.target.value)}
           >
@@ -64,7 +67,7 @@ export default function CustomEventFields({ items, setItems }: CustomEventFields
           <input
             type="number"
             placeholder="Estimated Amount"
-            className="border border-gray-300 px-2 py-1 rounded w-28"
+            className={`px-2 py-1 rounded w-28 border ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white" : "border-gray-300 bg-white text-gray-900"}`}
             value={item.estimatedAmount ?? ""}
             onChange={(e) =>
               updateItem(
@@ -77,7 +80,7 @@ export default function CustomEventFields({ items, setItems }: CustomEventFields
 
           <button
             type="button"
-            className="text-red-500 font-semibold px-2 py-1 rounded border hover:bg-red-50 transition"
+            className={`font-semibold px-2 py-1 rounded border transition ${theme === "dark" ? "text-red-400 border-red-500 hover:bg-red-600/20" : "text-red-500 border-red-500 hover:bg-red-50"}`}
             onClick={() => removeItem(item._id)}
           >
             Remove
@@ -93,7 +96,7 @@ export default function CustomEventFields({ items, setItems }: CustomEventFields
         + Add Task
       </button>
 
-      <p className="text-xs text-gray-500 mt-2">
+      <p className={`text-xs mt-2 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
         You can add tasks and budgets now, and edit them after creating the event.
       </p>
     </div>

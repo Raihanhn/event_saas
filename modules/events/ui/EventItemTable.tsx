@@ -3,6 +3,7 @@
 
 import React from "react";
 import Select, { components } from "react-select";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export interface EventItem {
   _id: string;
@@ -75,10 +76,21 @@ const EventItemTable = ({
   updateItem,
   allVendors,
 }: EventItemTableProps) => {
+
+    const { theme } = useThemeContext();
+
+  const baseInputClass = `border rounded px-2 py-1 w-full focus:outline-none focus:ring-1 ${
+    theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white focus:ring-indigo-500" : "border-gray-300 bg-white text-gray-900 focus:ring-blue-400"
+  }`;
+
+  const baseTableClass = theme === "dark" ? "bg-[#111827] text-white divide-gray-700" : "bg-white text-gray-900 divide-gray-200";
+
+  const headerClass = theme === "dark" ? "bg-[#1F2937] text-gray-300 border-b border-gray-600" : "bg-gray-50 text-gray-700 border-b border-gray-300";
+
   return (
-    <div className="bg-white rounded-lg shadow-md mt-6 overflow-auto">
+    <div className=" rounded-lg shadow-md mt-6 overflow-auto">
       {/* Header */}
-      <div className="flex justify-between items-center border-b border-gray-300 px-4 py-2 font-semibold text-gray-700 sticky top-0 bg-white z-10">
+      <div className={`flex justify-between items-center px-4 py-2 font-semibold sticky top-0 z-10 ${theme === "dark" ? "text-gray-300 border-b border-gray-600" : "text-gray-700 border-b border-gray-300"}`}>
         <span className="text-lg md:text-base">Tasks & Budgets</span>
         {editMode && (
           <button
@@ -107,8 +119,8 @@ const EventItemTable = ({
 
       {/* Table */}
       <div className="table-scroll-wrapper">
-        <table className="min-w-[1200px] w-full">
-          <thead className="bg-gray-50 sticky top-0 z-50 ">
+        <table className={`min-w-[1200px] w-full ${baseTableClass}`}>
+          <thead className={`sticky top-0 z-50 ${headerClass}`}>
             <tr>
               <th className="px-2 py-2 text-sm px-4  text-left">Title</th>
               <th className="px-2 py-2 text-sm  text-left">Phase</th>
@@ -124,9 +136,10 @@ const EventItemTable = ({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          {/* <tbody className="divide-y divide-gray-200"> */}
+          <tbody className="">
             {items.map((i) => (
-              <tr key={i._id} className="hover:bg-gray-50 transition">
+              <tr key={i._id} className={`hover:${theme === "dark" ? "bg-[#1F2937]/50" : "bg-gray-50"} transition`}>
                 {/* Title */}
                 <td className="px-4 py-1 text-sm ">
                   {editMode ? (
@@ -135,7 +148,7 @@ const EventItemTable = ({
                       onChange={(e) =>
                         updateItem(i._id, "title", e.target.value)
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     />
                   ) : (
                     i.title
@@ -150,7 +163,7 @@ const EventItemTable = ({
                       onChange={(e) =>
                         updateItem(i._id, "phase", e.target.value)
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     >
                       <option value="pre-event">Pre-Event</option>
                       <option value="event-day">Event Day</option>
@@ -170,7 +183,7 @@ const EventItemTable = ({
                       onChange={(e) =>
                         updateItem(i._id, "dueDate", e.target.value)
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     />
                   ) : i.dueDate ? (
                     new Date(i.dueDate).toDateString()
@@ -188,7 +201,7 @@ const EventItemTable = ({
                       onChange={(e) =>
                         updateItem(i._id, "startTime", e.target.value)
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     />
                   ) : (
                     i.startTime || "—"
@@ -202,7 +215,7 @@ const EventItemTable = ({
                       onChange={(e) =>
                         updateItem(i._id, "endTime", e.target.value)
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     />
                   ) : (
                     i.endTime || "—"
@@ -239,7 +252,7 @@ const EventItemTable = ({
                           e.target.value === "" ? null : Number(e.target.value),
                         )
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     />
                   ) : (
                     (i.estimatedAmount ?? "—")
@@ -257,7 +270,7 @@ const EventItemTable = ({
                           e.target.value === "" ? null : Number(e.target.value),
                         )
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     />
                   ) : (
                     (i.actualAmount ?? "—")
@@ -272,7 +285,7 @@ const EventItemTable = ({
                       onChange={(e) =>
                         updateItem(i._id, "status", e.target.value)
                       }
-                      className="border rounded px-2 py-1 w-full focus:ring-1 focus:ring-blue-400"
+                      className={baseInputClass}
                     >
                       <option value="pending">Pending</option>
                       <option value="in-progress">In Progress</option>

@@ -50,6 +50,11 @@ clip-path: path('M 0 0 C 32 0 32 64 0 64 C 0 48 24 32 64 0 Z');
 
 }
 
+/* Make date picker icon white in dark mode */
+.calendar-white::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.2); /* makes icon white */
+}
+
 
 .table-scroll-wrapper {
   overflow-x: auto;

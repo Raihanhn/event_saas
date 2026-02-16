@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export interface EventCardProps {
   label: string;
@@ -47,8 +48,11 @@ const EventCard = ({
   selectOptions,
   isNumber,
 }: EventCardProps) => {
+
+  const { theme } = useThemeContext();
+
   return (
-    <div className="bg-white relative overflow-hidden rounded-lg shadow p-4 flex flex-col space-y-2">
+    <div className={`relative overflow-hidden rounded-lg shadow p-4 flex flex-col space-y-2 ${theme === "dark" ? " bg-gray-800 text-white" : " text-gray-900"}`}>
       {/* Top curved triangle */}
       {color && (
         <span
@@ -58,7 +62,7 @@ const EventCard = ({
       )}
 
       {/* Label */}
-      <p className="text-sm text-gray-500">{label}</p>
+      <p className={`text-sm ${theme === "dark" ? "text-gray-300" : "text-gray-500"}`}>{label}</p>
 
       {/* Editable Content */}
       {editMode ? (
@@ -69,7 +73,7 @@ const EventCard = ({
             <select
               value={value as string}
               onChange={(e) => onChange?.(e.target.value)}
-              className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className={`border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white focus:ring-indigo-500" : "border-gray-300 bg-white text-gray-900 focus:ring-blue-400"}`}
             >
               {selectOptions.map((o) => (
                 <option key={o} value={o}>
@@ -82,7 +86,7 @@ const EventCard = ({
               type="number"
               value={value as number | string | undefined}
               onChange={(e) => onChange?.(e.target.value)}
-              className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className={`border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white focus:ring-indigo-500" : "border-gray-300 bg-white text-gray-900 focus:ring-blue-400"}`}
             />
           ) : typeof value === "string" && timeValue !== undefined ? (
             <div className="flex flex-col space-y-1">
@@ -90,13 +94,13 @@ const EventCard = ({
                 type="date"
                 value={(value as string).substr(0, 10)}
                 onChange={(e) => onChange?.(e.target.value, timeValue)}
-                className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className={`border rounded px-2 py-1 w-full focus:outline-none calendar-white focus:ring-2 ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white focus:ring-indigo-500" : "border-gray-300 bg-white text-gray-900 focus:ring-blue-400"}`}
               />
               <input
                 type="time"
                 value={timeValue || ""}
                 onChange={(e) => onChange?.(value, e.target.value)}
-                className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className={`border rounded px-2 py-1 w-full focus:outline-none calendar-white focus:ring-2 ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white focus:ring-indigo-500" : "border-gray-300 bg-white text-gray-900 focus:ring-blue-400"}`}
               />
             </div>
           ) : (
@@ -104,7 +108,7 @@ const EventCard = ({
               type="text"
               value={value as string | undefined}
               onChange={(e) => onChange?.(e.target.value)}
-              className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className={`border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 ${theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white focus:ring-indigo-500" : "border-gray-300 bg-white text-gray-900 focus:ring-blue-400"}`}
             />
           )}
         </>

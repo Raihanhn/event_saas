@@ -94,7 +94,7 @@ export default function Teams({ initialMembers, currentUser }: Props) {
             ${
               theme === "dark"
                 ? "bg-[#1F2937] border-gray-700"
-                : "bg-white border-[#E5E7EB]"
+                : "bg-[#F3F4F6] border-[#E5E7EB]"
             }
           `}>
         <table className="w-full table-fixed text-sm min-w-[700px]">

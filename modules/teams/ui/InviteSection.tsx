@@ -8,7 +8,7 @@ export default function InviteSection() {
         ${
           theme === "dark"
             ? "bg-[#1F2937] border-gray-700 text-white"
-            : "bg-white border-gray-300 text-gray-900"
+            : "bg-[#F3F4F6] border-gray-300 text-gray-900"
         }
       `}>
       <h2 className="text-lg font-semibold mb-1">Invite new members</h2>
@@ -25,7 +25,7 @@ export default function InviteSection() {
             ${
               theme === "dark"
                 ? "bg-[#111827] border-gray-700 text-white placeholder-gray-400"
-                : "bg-white border-gray-300 text-gray-900"
+                : "bg-[#F3F4F6] border-gray-300 text-gray-900"
             }
           `}
         />

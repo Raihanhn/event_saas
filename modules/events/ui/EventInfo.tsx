@@ -2,6 +2,7 @@
 "use client";
 import React from "react";
 import ClientsDisplay, { Client } from "./ClientsDisplay";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export interface EventData {
   _id: string;
@@ -41,8 +42,12 @@ export default function EventInfo({
     return `${new Date(date).toDateString()}${time ? ` at ${time}` : ""}`;
   };
 
-  const inputClass =
-    "border border-gray-300 focus:outline-none focus:ring-0 px-2 py-1 rounded-md";
+  
+ const { theme } = useThemeContext();
+
+  const inputClass = `border focus:outline-none focus:ring-0 px-2 py-1 rounded-md ${
+    theme === "dark" ? "border-gray-600 bg-[#1F2937] text-white" : "border-gray-300 bg-white text-gray-900"
+  }`;
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
@@ -55,10 +60,10 @@ export default function EventInfo({
               setEventData({ ...eventData, name: e.target.value })
             }
             // className="text-2xl font-semibold border focus:outline-none border-gray-300 px-1 py-0.5"
-            className={inputClass + " text-2xl font-semibold bg-white"}
+            className={inputClass + " text-2xl font-semibold "}
           />
         ) : (
-          <h1 className="text-2xl font-semibold capitalize">
+          <h1 className={`text-2xl font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
             {eventData.name}
           </h1>
         )}
@@ -75,12 +80,12 @@ export default function EventInfo({
         </div>
 
         {/* Event Type & Status */}
-        <p className="text-sm text-gray-500 capitalize mt-1">
+        <p className={`text-sm mt-1 capitalize ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
           {eventData.eventType} • {eventData.status}
         </p>
 
         {/* Start & End Date/Time */}
-        <p className="text-sm text-gray-500 mt-1">
+        <p className={`text-sm mt-1 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
           {eventData.startDate
             ? `${new Date(eventData.startDate).toDateString()}${
                 eventData.startTime ? ` at ${eventData.startTime}` : ""
@@ -96,7 +101,7 @@ export default function EventInfo({
         </p>
 
         {/* Location */}
-        <p className="text-sm text-gray-500 mt-1">
+        <p className={`text-sm mt-1 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
           Location: {eventData.location ?? "—"}
         </p>
       </div>

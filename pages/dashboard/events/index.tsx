@@ -7,6 +7,7 @@ import { requireAuthServerSide } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Client from "@/modules/clients/client.model";
 import Event from "@/modules/events/event.model";
+import { useThemeContext } from "@/context/ThemeContext";
 import mongoose from "mongoose";
 
 /* ================= TYPES ================= */
@@ -47,6 +48,7 @@ export default function Events({
   );
   console.log("Filtered Events:", filteredEvents);
   console.log("Event List State:", eventList);
+  const { theme } = useThemeContext();
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this event?")) return;
@@ -72,7 +74,9 @@ export default function Events({
   };
 
   return (
-    <div className="p-6 space-y-6 h-screen">
+    <div   className={`p-6 space-y-6 h-screen ${
+        theme === "dark" ? " text-white" : " text-gray-900"
+      }`}>
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Events</h1>
 
@@ -83,14 +87,15 @@ export default function Events({
             placeholder="Search events..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-72 outline-none"
+             className={`border rounded-lg px-4 py-2 w-full md:w-72 focus:outline-none
+              ${
+                theme === "dark"
+                  ? "bg-[#1F2937] border-gray-700 text-white placeholder-gray-400"
+                  : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+              }
+            `}
           />
 
-          {/* <Link href="/dashboard/events/create">
-            <button className="px-4 py-2 transition transform hover:scale-105 cursor-pointer rounded-lg bg-[#3B82F6] text-white rounded hover:bg-[#2563EB]">
-              + Create Event
-            </button>
-          </Link> */}
           {role === "admin" && (
             <Link href="/dashboard/events/create">
               <button className="px-4 py-2 transition transform hover:scale-105 cursor-pointer rounded-lg bg-[#3B82F6] text-white rounded hover:bg-[#2563EB]">
@@ -102,7 +107,9 @@ export default function Events({
       </div>
 
       {filteredEvents.length === 0 ? (
-        <div className="flex flex-col items-center border border-gray-300 rounded-lg justify-center py-20 space-y-6">
+        <div className={`flex flex-col items-center border rounded-lg justify-center py-20 space-y-6
+            ${theme === "dark" ? "border-gray-700" : "border-gray-300"}
+          `}>
           <svg
             className="w-16 h-16 text-gray-300"
             fill="none"
@@ -117,25 +124,29 @@ export default function Events({
               d="M9 17v-6h6v6m-6 0h6m-3-3V4m0 0L9 7m3-3l3 3"
             />
           </svg>
-          <h2 className="text-xl font-semibold text-gray-700">
+          <h2  className={`text-xl font-semibold ${
+              theme === "dark" ? "text-gray-300" : "text-gray-700"
+            }`}>
             No events created yet
           </h2>
-          <p className="text-gray-500 text-center">
+          <p className={`text-center ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`}>
             Start by creating your first event to get things rolling.
           </p>
         </div>
       ) : (
         <div
-          className="
-    bg-white/70 backdrop-blur-md
-    rounded-2xl
-    border border-gray-200/60
-    shadow-[0_10px_30px_rgba(0,0,0,0.08)]
-    overflow-hidden
-  "
+          className={`rounded-2xl border overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.08)] ${
+            theme === "dark"
+              ? "bg-[#1F2937] border-gray-700"
+              : "bg-[#F3F4F6] border-gray-200/60 backdrop-blur-md"
+          }`}
         >
           <table className="w-full text-sm">
-            <thead className="text-gray-500">
+            <thead className={`${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}>
               <tr>
                 <th className="px-6 py-4 text-left font-medium">Name</th>
                 <th className="px-6 py-4 text-left font-medium">Clients</th>
@@ -157,9 +168,15 @@ export default function Events({
               {filteredEvents.map((event) => (
                 <tr
                   key={event._id}
-                  className="border-t border-gray-300 hover:bg-gray-50 transition"
+                   className={`border-t transition ${
+                    theme === "dark"
+                      ? "border-gray-700 hover:bg-gray-800"
+                      : "border-gray-300 hover:bg-gray-50"
+                  }`}
                 >
-                  <td className="px-6 py-4 font-medium text-gray-900">
+                  <td className={`px-6 py-4 font-medium ${
+                      theme === "dark" ? "text-white" : "text-gray-900"
+                    }`}>
                     {event.name}
                   </td>
 
@@ -182,11 +199,15 @@ export default function Events({
                     </div>
                   </td>
 
-                  <td className="px-6 py-4 capitalize text-gray-700">
+                  <td className={`px-6 py-4 capitalize ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}>
                     {event.eventType}
                   </td>
 
-                  <td className="px-6 py-4 text-gray-700">
+                  <td  className={`px-6 py-4 font-medium ${
+                        theme === "dark" ? "text-white" : "text-gray-800"
+                      }`}>
                     {new Date(event.startDate).toLocaleDateString()}
                   </td>
 
@@ -195,12 +216,16 @@ export default function Events({
                   </td> */}
 
                   {role === "admin" && (
-                    <td className="px-6 py-4 font-medium text-gray-800">
+                    <td  className={`px-6 py-4 font-medium ${
+                        theme === "dark" ? "text-white" : "text-gray-800"
+                      }`}>
                       ${event.totalBudget?.toLocaleString() ?? 0}
                     </td>
                   )}
 
-                  <td className="px-6 py-4 capitalize text-gray-700">
+                  <td className={`px-6 py-4 capitalize ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}>
                     {event.status}
                   </td>
 
@@ -208,7 +233,11 @@ export default function Events({
                    <td className="px-6 py-4 text-right">
                     <div className="relative group inline-block">
                       {/* Vertical icon */}
-                      <button className="p-1 rounded-full hover:bg-gray-200 transition">
+                      <button className={`p-1 rounded-full transition ${
+                            theme === "dark"
+                              ? "hover:bg-gray-700 text-gray-300"
+                              : "hover:bg-gray-200 text-gray-500"
+                          }`}>
                         <svg
                           className="w-5 h-5 text-gray-500"
                           fill="currentColor"
@@ -220,23 +249,17 @@ export default function Events({
 
                       {/* Hover menu */}
                       <div
-                        className="
-                        absolute right-5 -mt-9
-                        bg-white
-                        border border-gray-200
-                        rounded-lg
-                        shadow-lg
-                        opacity-0
-                        invisible
-                        group-hover:opacity-100
-                        group-hover:visible
-                        transition
-                        z-20
-                      "
+                        className={`absolute right-5 -mt-9 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-20
+                            ${
+                              theme === "dark"
+                                ? "bg-[#1F2937] border border-gray-700 text-white"
+                                : "bg-white border border-gray-200 text-gray-900"
+                            }
+                          `}
                       >
                         <div className="flex items-center gap-4 px-4 py-2">
                           <Link href={`/dashboard/events/${event._id}`}>
-                            <span className="text-sm text-gray-800 hover:underline cursor-pointer">
+                            <span className="text-sm  hover:underline cursor-pointer">
                               View
                             </span>
                           </Link>

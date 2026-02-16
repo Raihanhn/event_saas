@@ -11,6 +11,7 @@ import { requireAuthServerSide } from "@/lib/auth";
 import { seedTemplatesForOrg } from "@/lib/seedTemplates";
 import Select from "react-select";
 import { EventItem } from "@/modules/events/ui/EventItemTable";
+import { useThemeContext } from "@/context/ThemeContext";
 
 interface CreateEventPageProps {
   templates: ITemplate[];
@@ -24,7 +25,7 @@ interface Client {
 
 export default function CreateEventPage({ templates }: CreateEventPageProps) {
   const router = useRouter();
-
+  const { theme } = useThemeContext();
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -98,28 +99,35 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
   console.log("Selected Clients:", selectedClients);
 
   return (
-    <div className="p-6 h-screen mx-auto space-y-6">
+    <div className={`p-6 h-screen mx-auto space-y-6 ${theme === "dark" ? " text-white" : " text-gray-900"}`}>
       <h1 className="text-2xl font-semibold">Create Event</h1>
 
       {/* Event Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          className="w-full border border-gray-300 focus:outline-none px-3 py-2 rounded"
+          className={`w-full border rounded px-3 py-2 focus:outline-none ${
+            theme === "dark" ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+          }`}
           placeholder="Event Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
 
-        <label className="block text-sm text-gray-600 mb-1">Total Budget</label>
+        <label className="block text-sm mb-1">Total Budget</label>
         <input
           type="number"
-          value={totalBudget}
-          onChange={(e) => setTotalBudget(Number(e.target.value))}
+           value={totalBudget === 0 ? "" : totalBudget}
+          onChange={(e) => {
+            const val = e.target.value;
+            setTotalBudget(val === "" ? 0 : Number(val));
+          }}
           placeholder="Enter total budget"
-          className="w-full border border-gray-300 focus:outline-none px-3 py-2 rounded"
+           className={`w-full border rounded px-3 py-2 focus:outline-none ${
+            theme === "dark" ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+          }`}
         />
-           <label className="block text-sm text-gray-600 mb-1">
+           <label className="block text-sm mb-1">
               Select Client
             </label>
         <Select
@@ -133,42 +141,95 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
                 : [],
             );
           }}
+           menuPortalTarget={typeof document !== "undefined" ? document.body : undefined}
+  styles={{
+    control: (base) => ({
+      ...base,
+      minHeight: "40px",
+      borderRadius: "8px",
+      borderColor: theme === "dark" ? "#374151" : "#d1d5db",
+      backgroundColor: theme === "dark" ? "#1F2937" : "#fff",
+      color: theme === "dark" ? "#fff" : "#111827",
+      boxShadow: "none",
+      ":hover": { borderColor: theme === "dark" ? "#6B7280" : "#9ca3af" },
+    }),
+    input: (base) => ({
+      ...base,
+      color: theme === "dark" ? "#fff" : "#111827",
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: theme === "dark" ? "#9CA3AF" : "#6B7280",
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused
+        ? theme === "dark"
+          ? "#374151"
+          : "#f3f4f6"
+        : theme === "dark"
+        ? "#1F2937"
+        : "#fff",
+      color: theme === "dark" ? "#fff" : "#111827",
+      cursor: "pointer",
+      padding: "10px",
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: theme === "dark" ? "#1F2937" : "#fff",
+      color: theme === "dark" ? "#fff" : "#111827",
+    }),
+    menuPortal: (base) => ({
+      ...base,
+      zIndex: 9999,
+      backgroundColor: theme === "dark" ? "#1F2937" : "#fff",
+      color: theme === "dark" ? "#fff" : "#111827",
+    }),
+  }}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">
+            <label className="block text-sm mb-1">
               Start Date & Time
             </label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full border border-gray-300 focus:outline-none px-2 py-1 rounded mb-1"
+              className={`w-full border rounded px-2 py-1 mb-1 focus:outline-none calendar-white ${
+                theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"
+              }`}
               required
             />
             <input
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="w-full border border-gray-300 focus:outline-none px-2 py-1 rounded"
+               className={`w-full border rounded px-2 py-1 focus:outline-none calendar-white ${
+                theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"
+              }`}
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600 mb-1">
+            <label className="block text-sm  mb-1">
               End Date & Time
             </label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full border border-gray-300 focus:outline-none px-2 py-1 rounded mb-1"
+              className={`w-full border rounded px-2 py-1 mb-1 focus:outline-none calendar-white ${
+                theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"
+              }`}
             />
             <input
               type="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className="w-full border border-gray-300 focus:outline-none px-2 py-1 rounded"
+              className={`w-full border rounded px-2 py-1 focus:outline-none calendar-white ${
+                theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"
+              }`}
             />
           </div>
         </div>
@@ -184,7 +245,9 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
         </label>
 
         <input
-          className="w-full border border-gray-300 focus:outline-none px-3 py-2 rounded"
+           className={`w-full border rounded px-3 py-2 focus:outline-none ${
+            theme === "dark" ? "bg-gray-800 border-gray-700 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+          }`}
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
@@ -198,8 +261,14 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
               setMode("custom");
               setSelectedTemplate(null);
             }}
-            className={`px-4 py-2 rounded border border-gray-300 transition transform hover:scale-105 cursor-pointer ${
-              mode === "custom" ? "bg-gray-200" : ""
+            className={`px-4 py-2 rounded border transition transform hover:scale-105 cursor-pointer ${
+              mode === "custom"
+                ? theme === "dark"
+                  ? "bg-gray-700 text-white border-gray-600"
+                  : "bg-gray-200 text-gray-900 border-gray-300"
+                : theme === "dark"
+                ? "border-gray-600 text-white"
+                : "border-gray-300 text-gray-900"
             }`}
           >
             Custom Event
@@ -208,8 +277,12 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className={`px-4 py-2 rounded border transition transform hover:scale-105 cursor-pointer ${
-              mode === "template" ? " bg-[#3B82F6] text-white" : ""
+             className={`px-4 py-2 rounded border transition transform hover:scale-105 cursor-pointer ${
+              mode === "template"
+                ? "bg-[#3B82F6] text-white border-[#3B82F6]"
+                : theme === "dark"
+                ? "border-gray-600 text-white"
+                : "border-gray-300 text-gray-900"
             }`}
           >
             Choose Template
