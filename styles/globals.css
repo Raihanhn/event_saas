@@ -1,0 +1,302 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+@import "tailwindcss";
+
+html,
+body {
+  font-family: "Inter", sans-serif;
+}
+
+::-webkit-scrollbar {
+  display: none; 
+}
+
+* {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;     
+}
+
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.4s ease-out;
+}
+
+/* .clip-triangle-curved {
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  border-bottom-left-radius: 16px;
+} */
+
+.clip-triangle-curved {
+  width: 24px;      /* adjust size */
+  height: 24px;     /* adjust size */
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  /* Make a curved triangle using border-radius */
+clip-path: path('M 0 0 C 32 0 32 64 0 64 C 0 48 24 32 64 0 Z');  
+ 
+
+}
+
+
+.table-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: auto; 
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand-primary) #F3F4F6;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--brand-primary);
+  border-radius: 4px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: #F3F4F6;
+}
+
+
+
+
+
+
+
+
+/* {
+"brand": {
+"primary": {
+"default": "#4F46E5",
+"hover": "#4338CA",
+"active": "#3730A3",
+"soft": "#EEF2FF"
+},
+"accent": {
+"default": "#F59E0B",
+"hover": "#D97706",
+"soft": "#FEF3C7"
+}
+},
+
+"background": {
+"main": "#FFFFFF",
+"app": "#F9FAFB",
+"card": "#F3F4F6",
+"border": "#E5E7EB",
+"footer": "#111827"
+},
+
+"text": {
+"primary": "#111827",
+"secondary": "#374151",
+"muted": "#6B7280",
+"disabled": "#9CA3AF",
+"inverse": "#FFFFFF",
+"footer": "#D1D5DB"
+},
+
+"layout": {
+"header": {
+"background": "#FFFFFF",
+"border": "#E5E7EB",
+"text": "#111827",
+"icon": "#374151"
+},
+"sidebar": {
+"background": "#F9FAFB",
+"item": "#374151",
+"itemHover": "#E5E7EB",
+"itemActive": "#4F46E5",
+"itemActiveBackground": "#EEF2FF"
+},
+"body": {
+"background": "#FFFFFF",
+"card": "#F9FAFB"
+}
+},
+
+"buttons": {
+"primary": {
+"background": "#4F46E5",  
+"text": "#FFFFFF",
+"hover": "#4338CA",
+"active": "#3730A3",
+"disabled": "#C7D2FE"
+},
+"secondary": {
+"background": "#FFFFFF",
+"border": "#E5E7EB",
+"text": "#374151",
+"hoverBackground": "#F3F4F6"
+},
+"accent": {
+"background": "#F59E0B",
+"text": "#111827",
+"hover": "#D97706"
+}
+},
+
+"calendar": {
+"vendor": {
+"color": "#8B5CF6",
+"background": "#F5F3FF"
+},
+"client": {
+"color": "#EC4899",
+"background": "#FCE7F3"
+},
+"budget": {
+"color": "#F59E0B",
+"background": "#FEF3C7"
+},
+"internal": {
+"color": "#3B82F6",
+"background": "#DBEAFE"
+},
+"eventDay": {
+"color": "#EF4444",
+"background": "#FEE2E2"
+}
+},
+
+"status": {
+"success": "#10B981",
+"warning": "#F59E0B",
+"error": "#EF4444",
+"info": "#3B82F6"
+},
+
+"darkMode": {
+"background": "#0F172A",
+"surface": "#1E293B",
+"text": "#E5E7EB",
+"primary": "#818CF8",
+"accent": "#FBBF24"
+}
+} */
+
+
+/* globals.css */
+:root {
+  /* =========================
+     BRAND COLORS
+  ========================= */
+  --brand-primary: #4F46E5;
+  --brand-primary-hover: #4338CA;
+  --brand-primary-active: #3730A3;
+  --brand-primary-soft: #EEF2FF;
+
+  --brand-accent: #F59E0B;
+  --brand-accent-hover: #D97706;
+  --brand-accent-soft: #FEF3C7;
+
+  /* =========================
+     BACKGROUND COLORS
+  ========================= */
+  --bg-main: #FFFFFF;
+  --bg-app: #F9FAFB;
+  --bg-card: #F3F4F6;
+  --bg-border: #E5E7EB;
+  --bg-footer: #111827;
+
+  /* =========================
+     TEXT COLORS
+  ========================= */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6B7280;
+  --text-disabled: #9CA3AF;
+  --text-inverse: #FFFFFF;
+  --text-footer: #D1D5DB;
+
+  /* =========================
+     LAYOUT
+  ========================= */
+  --header-bg: #FFFFFF;
+  --header-border: #E5E7EB;
+  --header-text: #111827;
+  --header-icon: #374151;
+
+  --sidebar-bg: #F9FAFB;
+  --sidebar-item: #374151;
+  --sidebar-item-hover: #E5E7EB;
+  --sidebar-item-active: #4F46E5;
+  --sidebar-item-active-bg: #EEF2FF;
+
+  --body-bg: #FFFFFF;
+  --body-card: #F9FAFB;
+
+  /* =========================
+     BUTTONS
+  ========================= */
+  --btn-primary-bg: #4F46E5;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #4338CA;
+  --btn-primary-active: #3730A3;
+  --btn-primary-disabled: #C7D2FE;
+
+  --btn-secondary-bg: #FFFFFF;
+  --btn-secondary-border: #E5E7EB;
+  --btn-secondary-text: #374151;
+  --btn-secondary-hover-bg: #F3F4F6;
+
+  --btn-accent-bg: #F59E0B;
+  --btn-accent-text: #111827;
+  --btn-accent-hover: #D97706;
+
+  /* =========================
+     STATUS COLORS
+  ========================= */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+}
+
+/* 
+🔵 Primary Button (Main CTA)
+
+Use this for Save, Submit, Create, Login, Confirm
+
+Why: Your brand primary is strong and readable on white.
+
+Background:   #4F46E5
+Text:         #FFFFFF
+Border:       none
+
+Hover:        #4338CA
+Active:       #3730A3
+Disabled bg:  #C7D2FE
+Disabled txt: #FFFFFF (60% opacity)
+
+🟦 Default Card (Most UI)
+
+Use everywhere: dashboards, forms, lists
+
+Background:   #F9FAFB
+Border:       #E5E7EB
+Text:         #111827
+
+🌑 Dark Mode Card
+
+If dark mode is enabled:
+
+Background:   #1E293B
+Border:       #334155
+Text:         #E5E7EB */
