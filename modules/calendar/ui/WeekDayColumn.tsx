@@ -7,6 +7,7 @@ import { useDroppable, useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { CalendarItem } from "../calendar.types";
 import { PHASE_COLORS } from "../calendar.constants";
+import { useThemeContext } from "@/context/ThemeContext";
 
 /* ------------------------------------------------------------------ */
 /* Task colors (distinct from column bg) */
@@ -20,12 +21,9 @@ const TASK_COLORS = [
 ];
 
 function colorById(id: string) {
-  return (
-    TASK_COLORS[
-      id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) %
-        TASK_COLORS.length
-    ]
-  );
+  return TASK_COLORS[
+    id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % TASK_COLORS.length
+  ];
 }
 
 /* ------------------------------------------------------------------ */
@@ -61,6 +59,7 @@ export default function WeekDayColumn({
   rowHeight = 40,
 }: Props) {
   const { setNodeRef } = useDroppable({ id: String(dayIndex) });
+  const { theme } = useThemeContext();
 
   /* COLUMN PHASE */
   const columnPhase = items[0]?.phase;
@@ -76,13 +75,12 @@ export default function WeekDayColumn({
     <div
       ref={setNodeRef}
       id={`day-col-${dayIndex}`}
-      onMouseMove={(e) =>
-        setMouse({ x: e.clientX + 12, y: e.clientY + 12 })
-      }
+      onMouseMove={(e) => setMouse({ x: e.clientX + 12, y: e.clientY + 12 })}
       onMouseLeave={() => setMouse(null)}
-      className={`relative border-l border-gray-300 ${
-        phaseMeta?.bg ?? "bg-white"
-      }`}
+      className={`relative border-l
+      ${theme === "dark" ? "border-gray-700" : "border-gray-300"}
+      ${phaseMeta?.bg ?? (theme === "dark" ? "bg-[#111827]" : "bg-white")}
+    `}
     >
       {/* CURSOR TOOLTIP */}
       {phaseMeta && mouse && (
@@ -104,7 +102,11 @@ export default function WeekDayColumn({
       )}
 
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-300 text-xs font-semibold text-center py-2">
+      <div className={`sticky top-0 z-10 text-xs font-semibold text-center py-2
+      ${theme === "dark"
+        ? "bg-[#1F2937] border-b border-gray-700 text-gray-200"
+        : "bg-white border-b border-gray-300 text-gray-800"}
+      `}>
         {label}
       </div>
 
@@ -113,7 +115,9 @@ export default function WeekDayColumn({
         {hours.map((h) => (
           <div
             key={h}
-            className="border-b border-dashed border-gray-200"
+            className={`border-b border-dashed
+              ${theme === "dark" ? "border-gray-700" : "border-gray-200"}
+            `}
             style={{ height: rowHeight }}
           />
         ))}
@@ -167,9 +171,8 @@ function DraggableEvent({
     id: item.id,
   });
 
-  const itemVendors = vendorsList.filter((v) =>
-    item.vendors?.includes(v.id)
-  );
+  const itemVendors = vendorsList.filter((v) => item.vendors?.includes(v.id));
+    const { theme } = useThemeContext();
 
   return (
     <div
@@ -183,13 +186,18 @@ function DraggableEvent({
       }}
       onDoubleClick={() => onQuickEdit(item)}
       className={`absolute left-1 right-1 rounded-lg p-2 text-xs cursor-grab
-        shadow-sm hover:shadow-md select-none
-        border-l-4 ${colorById(item.id)}`}
+  select-none border-l-4 ${colorById(item.id)}
+  ${theme === "dark"
+    ? "bg-[#1F2937] text-gray-200 shadow-none hover:shadow-lg"
+    : "bg-white text-gray-900 shadow-sm hover:shadow-md"}
+`}
     >
       <p className="font-medium truncate">{item.title}</p>
 
       <div className="flex justify-between items-center mt-1">
-        <span className="text-[10px] opacity-70">
+        <span  className={`text-[10px] ${
+        theme === "dark" ? "text-gray-400" : "text-gray-600"
+      }`}>
           {item.startTime}
           {item.endTime && ` – ${item.endTime}`}
         </span>
@@ -207,9 +215,12 @@ function DraggableEvent({
 
             {itemVendors.length > 2 && (
               <div
-                className="w-4 h-4 rounded-full border-2 border-white
-                bg-white flex items-center justify-center
-                text-[8px] font-medium text-gray-700"
+                className={`w-4 h-4 rounded-full border-2
+                 flex items-center justify-center
+                 ${theme === "dark"
+                ? "bg-gray-700 text-gray-200 border-gray-600"
+                : "bg-white text-gray-700 border-white"}
+                text-[8px] font-medium text-gray-700`}
                 title={`${itemVendors.length - 2} more`}
               >
                 +{itemVendors.length - 2}
@@ -221,4 +232,3 @@ function DraggableEvent({
     </div>
   );
 }
-
