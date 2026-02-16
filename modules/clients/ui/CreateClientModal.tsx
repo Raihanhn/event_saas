@@ -1,5 +1,6 @@
 // modules/clients/ui/CreateClientModal.tsx
 import { useState, useEffect } from "react";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export default function CreateClientModal({
   open,
@@ -13,6 +14,7 @@ export default function CreateClientModal({
   client?: any; // new
 }) {
   const [loading, setLoading] = useState(false);
+  const { theme } = useThemeContext();
   const [formValues, setFormValues] = useState({
     name: "",
     email: "",
@@ -72,7 +74,9 @@ export default function CreateClientModal({
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl p-6 w-full max-w-md space-y-4"
+        className={`rounded-xl p-6 w-full max-w-md space-y-4
+          ${theme === "dark" ? "bg-[#1F2937] text-white" : "bg-[#F3F4F6] text-gray-900"}
+        `}
       >
         <h2 className="text-lg font-semibold">
           {client ? "Edit Client" : "Create Client"}
@@ -84,7 +88,13 @@ export default function CreateClientModal({
           onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
           required
           placeholder="Client name"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none"
+          className={`w-full rounded-lg px-3 py-2 outline-none border
+            ${
+              theme === "dark"
+                ? "bg-[#374151] border-gray-600 text-white placeholder-gray-400"
+                : "bg-white border-gray-300 text-gray-900"
+            }
+          `}
         />
 
         <input
@@ -94,7 +104,13 @@ export default function CreateClientModal({
           onChange={(e) => setFormValues({ ...formValues, email: e.target.value })}
           required
           placeholder="Email address"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none"
+          className={`w-full rounded-lg px-3 py-2 outline-none border
+            ${
+              theme === "dark"
+                ? "bg-[#374151] border-gray-600 text-white placeholder-gray-400"
+                : "bg-white border-gray-300 text-gray-900"
+            }
+          `}
         />
 
         <input
@@ -102,14 +118,26 @@ export default function CreateClientModal({
           value={formValues.phone}
           onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
           placeholder="Phone (optional)"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none "
+          className={`w-full rounded-lg px-3 py-2 outline-none border
+            ${
+              theme === "dark"
+                ? "bg-[#374151] border-gray-600 text-white placeholder-gray-400"
+                : "bg-white border-gray-300 text-gray-900"
+            }
+          `}
         />
 
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="px-4 py-2 rounded-lg border border-gray-300 cursor-pointer transition transform hover:scale-105 "
+            className={`px-4 py-2 rounded-lg border transition transform hover:scale-105 cursor-pointer
+              ${
+                theme === "dark"
+                  ? "border-gray-600 bg-[#374151] hover:bg-[#4B5563]"
+                  : "border-gray-300 bg-white hover:bg-gray-100"
+              }
+            `}
           >
             Cancel
           </button>
