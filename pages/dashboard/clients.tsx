@@ -8,6 +8,7 @@ import { connectDB } from "@/lib/mongodb";
 import ClientCard from "@/modules/clients/ui/ClientCard";
 import CreateClientModal from "@/modules/clients/ui/CreateClientModal";
 import ShareEventModal from "@/modules/clients/ui/ShareEventModal";
+import { useThemeContext } from "@/context/ThemeContext";
 
 interface Props {
   initialClients: any[];
@@ -19,6 +20,7 @@ export default function Clients({ initialClients }: Props) {
   const [open, setOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<any | null>(null);
   const [shareClient, setShareClient] = useState<any | null>(null);
+   const { theme } = useThemeContext();
 
   async function handleSearch(value: string) {
     setSearch(value);
@@ -78,7 +80,9 @@ export default function Clients({ initialClients }: Props) {
   }
 
   return (
-    <div className="p-6 space-y-6 h-screen">
+    <div  className={`p-6 space-y-6 h-screen
+        ${theme === "dark" ? "bg-[#111827] text-white" : "text-gray-900"}
+      `}>
       {/* Header */}
       <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
         <h1 className="text-2xl font-semibold">Clients</h1>
@@ -88,7 +92,13 @@ export default function Clients({ initialClients }: Props) {
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search name, email, phone"
-            className="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-72 outline-none"
+            className={`rounded-lg px-4 py-2 w-full md:w-72 outline-none border
+              ${
+                theme === "dark"
+                  ? "bg-[#1F2937] border-gray-600 text-white placeholder-gray-400"
+                  : "bg-white border-gray-300 text-gray-900"
+              }
+            `}
           />
 
           <button
@@ -107,7 +117,13 @@ export default function Clients({ initialClients }: Props) {
             {["Demo Client 1", "Demo Client 2", "Demo Client 3"].map((d) => (
               <div
                 key={d}
-                className="h-40 rounded-xl border border-dashed flex items-center justify-center text-gray-400"
+                className={`h-40 rounded-xl border border-dashed flex items-center justify-center
+                  ${
+                    theme === "dark"
+                      ? "border-gray-600 text-gray-400"
+                      : "border-gray-300 text-gray-400"
+                  }
+                `}
               >
                 {d}
               </div>
