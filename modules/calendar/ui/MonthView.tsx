@@ -112,7 +112,7 @@ export default function MonthView({
 
           // ✅ Determine phase and background color
           const dayPhase = dayTasks[0]?.phase ?? null; // pick first task's phase
-          const dayBg = dayPhase ? PHASE_COLORS[dayPhase].bg : "bg-white";
+          const dayBg = dayPhase ? PHASE_COLORS[dayPhase].bg : "";
 
           return (
             <div

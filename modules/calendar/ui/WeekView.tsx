@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import WeekDayColumn from "./WeekDayColumn";
 import { CalendarItem } from "../calendar.types";
 import { PHASE_COLORS } from "../calendar.constants";
+import { useThemeContext } from "@/context/ThemeContext";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -36,6 +37,7 @@ function WeekView({
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
   );
+   const { theme } = useThemeContext();
 
   const handleDragEnd = (e: DragEndEvent) => {
     if (!e.over) return;
@@ -73,14 +75,22 @@ function WeekView({
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="overflow-x-auto">
-        <div className="rounded-xl border border-gray-300 bg-white p-2 min-w-[900px]">
+        <div  className={`rounded-xl p-2 min-w-[900px] border
+            ${
+              theme === "dark"
+                ? "bg-[#111827] border-gray-700 text-gray-200"
+                : "bg-white border-gray-300 text-gray-900"
+            }
+          `}>
 
           {/* Phase Legend */}
           <div className="flex gap-4 mb-2">
             {Object.values(PHASE_COLORS).map((p) => (
               <div key={p.label} className="flex items-center gap-1">
                 <div className={`w-3 h-3 rounded-full ${p.bg} border ${p.border}`} />
-                <span className="text-xs">{p.label}</span>
+                <span  className={`text-xs ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}>{p.label}</span>
               </div>
             ))}
           </div>
@@ -93,7 +103,13 @@ function WeekView({
                 <div
                   key={h}
                   style={{ height: ROW_HEIGHT }}
-                  className="text-[10px] text-right pr-1 text-gray-500"
+                   className={`text-[10px] text-right pr-1
+                    ${
+                      theme === "dark"
+                        ? "text-gray-400"
+                        : "text-gray-500"
+                    }
+                  `}
                 >
                   {format(new Date().setHours(h, 0, 0, 0), "h a")}
                 </div>
@@ -101,7 +117,13 @@ function WeekView({
             </div>
 
             {/* Day columns */}
-            <div className="grid grid-cols-7 flex-1 border border-l-0 border-gray-200 rounded-lg overflow-hidden">
+            <div className={`grid grid-cols-7 flex-1 rounded-lg overflow-hidden border border-l-0
+                ${
+                  theme === "dark"
+                    ? "border-gray-700"
+                    : "border-gray-200"
+                }
+              `}>
               {DAYS.map((label, idx) => {
                 const dayItems = items.filter(
                   (i) => new Date(i.startDate).getDay() === idx
