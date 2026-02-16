@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useCalendarStore } from "@/modules/calendar/calendar.store";
 import EventQuickEdit from "@/modules/calendar/ui/EventQuickEdit";
 import { CalendarItem } from "@/modules/calendar/calendar.types";
+import { useThemeContext } from "@/context/ThemeContext";
 
 const WeekView = dynamic(() => import("@/modules/calendar/ui/WeekView"), {
   ssr: false,
@@ -17,7 +18,7 @@ const MonthView = dynamic(() => import("@/modules/calendar/ui/MonthView"), {
 
 export default function CalendarPage() {
   const { upsertItem } = useCalendarStore();
-
+  const { theme } = useThemeContext();
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"week" | "month">("week");
   const [search, setSearch] = useState("");
@@ -202,18 +203,18 @@ export default function CalendarPage() {
     }
   };
 
-  if (loading)
-    return <p className="text-sm text-gray-500">Loading calendar…</p>;
+  // if (loading)
+  //   return <p className="text-sm text-gray-500">Loading calendar…</p>;
 
   return (
-    <div className="space-y-4 h-screen ">
+    <div className={`${theme === "dark" ? " text-white" : " text-gray-900"} space-y-4 h-screen`}>
       {/* Header */}
-      <div className="flex flex-col gap-4 border-b border-gray-300 pb-4">
+      <div className={`flex flex-col gap-4 border-b pb-4 ${theme === "dark" ? "border-gray-600" : "border-gray-300"}`}>
         {/* Title + Date */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-semibold">Calendar</h1>
-            <p className="text-sm text-gray-500">
+            <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"} text-sm`}>
               {new Date().toLocaleDateString("en-US", {
                 weekday: "long",
                 day: "numeric",
@@ -227,7 +228,11 @@ export default function CalendarPage() {
           <select
             value={selectedEvent}
             onChange={(e) => setSelectedEvent(e.target.value)}
-            className="h-9 rounded-md border border-gray-300 px-3 text-sm bg-white"
+             className={`h-9 rounded-md border px-3 text-sm ${
+              theme === "dark"
+                ? "bg-[#374151] border-gray-600 text-white"
+                : "bg-white border-gray-300 text-gray-900"
+            }`}
           >
             {eventsData.map((e) => (
               <option key={e._id} value={e._id}>
@@ -244,19 +249,25 @@ export default function CalendarPage() {
             placeholder="Search tasks or vendors…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-full sm:w-64 rounded-md border border-gray-300 px-3 text-sm"
+            className={`h-9 w-full sm:w-64 rounded-md border px-3 text-sm ${
+              theme === "dark"
+                ? "bg-[#374151] border-gray-600 text-white placeholder-gray-400"
+                : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+            }`}
           />
 
           {/* View toggle */}
-          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+          <div className={`flex rounded-md border overflow-hidden ${theme === "dark" ? "border-gray-600" : "border-gray-300"}`}>
             {["week", "month"].map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v as any)}
-                className={`px-4 h-9 text-sm  transition transform hover:scale-105 cursor-pointer ${
+                 className={`px-4 h-9 text-sm transition transform hover:scale-105 cursor-pointer ${
                   view === v
                     ? "bg-blue-600 text-white"
-                    : "bg-white hover:bg-gray-100"
+                    : theme === "dark"
+                    ? "bg-[#374151] text-white hover:bg-[#4B5563]"
+                    : "bg-white hover:bg-gray-100 text-gray-900"
                 }`}
               >
                 {v === "week" ? "Week" : "Month"}
