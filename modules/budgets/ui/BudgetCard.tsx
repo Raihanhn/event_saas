@@ -1,5 +1,6 @@
 // modules/budgets/ui/BudgetCard.tsx
 import React, { useState } from "react";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export interface Subcategory {
   name: string;
@@ -47,9 +48,10 @@ const BudgetCard: React.FC<Props> = ({
   vendors,
 }) => {
   const [edit, setEdit] = useState(false);
+  const { theme } = useThemeContext();
 
   return (
-    <div className="bg-white rounded-2xl shadow p-4 space-y-4">
+    <div className={`  ${theme === "dark" ? "bg-gray-800 border-gray-800" : "bg-[#F3F4F6] border-gray-200"} rounded-2xl shadow p-4 space-y-4`}>
       {/* Header: Category */}
       <div className="flex justify-between items-center">
         {edit ? (
@@ -162,7 +164,7 @@ const BudgetCard: React.FC<Props> = ({
               />
               <select
                 value={s.vendors?.[0]?.vendor || ""}
-                className="border border-gray-300 rounded px-2 py-1 col-span-1"
+                className={`border ${theme === "dark" ? "bg-gray-800 border-gray-800" : "bg-white border-gray-200"} rounded px-2 py-1 col-span-1`}
                 onChange={(e) =>
                   updateSubcategory(budget._id, i, "vendors", [
                     {
