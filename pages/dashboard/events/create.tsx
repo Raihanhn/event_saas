@@ -98,7 +98,7 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
   console.log("Selected Clients:", selectedClients);
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
+    <div className="p-6 h-screen mx-auto space-y-6">
       <h1 className="text-2xl font-semibold">Create Event</h1>
 
       {/* Event Form */}
@@ -240,6 +240,7 @@ export default function CreateEventPage({ templates }: CreateEventPageProps) {
           setModalOpen(false);
         }}
       />
+        <div className="h-56"></div>
     </div>
   );
 }

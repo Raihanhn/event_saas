@@ -151,7 +151,7 @@ if (i.budgetId) {
 
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 h-screen space-y-6">
       <EventInfo eventData={eventData} setEventData={setEventData} editMode={editMode} setEditMode={setEditMode} saveChanges={saveChanges}   allClients={allClients} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
@@ -164,6 +164,7 @@ if (i.budgetId) {
       </div>
 
       <EventItemTable items={items} editMode={editMode} updateItem={updateItem} allVendors={allVendors} />
+        <div className="h-56"></div>
     </div>
   );
 }

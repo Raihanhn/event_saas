@@ -19,7 +19,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 h-screen space-y-6 max-w-7xl mx-auto">
       {/* PAGE TITLE */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -100,6 +100,7 @@ export default function Settings() {
           </button>
         </div>
       </div>
+        <div className="h-56"></div>
     </div>
   );
 }
