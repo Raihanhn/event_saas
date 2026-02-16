@@ -1,8 +1,7 @@
 // modules/clients/ui/ClientCard.tsx
 import Image from "next/image";
 import { Pencil, Trash2, Mail, Phone, Share2 } from "lucide-react";
-import { useState } from "react";
-import ShareEventModal from "./ShareEventModal";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export default function ClientCard({
   client,
@@ -16,8 +15,16 @@ export default function ClientCard({
   onShare?: (client: any) => void;
 }) {
 
+  const { theme } = useThemeContext();
+
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition transform hover:scale-105 ">
+    <div className={`rounded-xl border p-4 shadow-sm transition transform hover:scale-105
+        ${
+          theme === "dark"
+            ? "bg-[#1F2937] border-gray-700 text-white"
+            : "bg-[#F3F4F6] border-gray-200 text-gray-900"
+        }
+      `}>
       {/* Main row */}
       <div className="flex justify-between items-start gap-4">
         {/* Left column: Avatar, Name, Email & Phone */}
@@ -32,14 +39,18 @@ export default function ClientCard({
               className="rounded-full"
             />
 
-            <p className="font-medium capitalize text-gray-900 leading-tight">
+            <p className={`font-medium capitalize leading-tight
+                ${theme === "dark" ? "text-white" : "text-gray-900"}
+              `}>
               {client.name}
             </p>
           </div>
 
           {/* Email */}
           {client.email && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className={`flex items-center gap-2 text-sm
+                ${theme === "dark" ? "text-gray-300" : "text-gray-600"}
+              `}>
               <Mail size={14} className="text-gray-400 hover:text-[#DB2777] " />
               <span className="break-all">{client.email}</span>
             </div>
@@ -47,7 +58,9 @@ export default function ClientCard({
 
           {/* Phone */}
           {client.phone && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className={`flex items-center gap-2 text-sm
+                ${theme === "dark" ? "text-gray-300" : "text-gray-600"}
+              `}>
               <Phone size={14} className="text-gray-400 hover:text-[#DB2777]" />
               <span>{client.phone}</span>
             </div>
