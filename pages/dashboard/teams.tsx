@@ -6,7 +6,7 @@ import Image from "next/image";
 import CreateTeamModal from "@/modules/teams/ui/CreateTeamModal";
 import EditTeamModal from "@/modules/teams/ui/EditTeamModal";
 import Pagination from "@/modules/common/Pagination";
-
+import { useThemeContext } from "@/context/ThemeContext";
 import { connectDB } from "@/lib/mongodb";
 import { requireAuthServerSide } from "@/lib/auth";
 import UserModel from "@/modules/users/user.model";
@@ -65,13 +65,16 @@ export default function Teams({ initialMembers, currentUser }: Props) {
   /* ---------------- Modals ---------------- */
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editMember, setEditMember] = useState<TeamMember | null>(null);
+  const { theme } = useThemeContext();
 
   return (
-    <div className="p-6 space-y-6 h-screen">
-      <div className="p-6 bg-[#F9FAFB] min-h-screen flex flex-col">
+    <div className={`p-6 space-y-6 h-screen
+        ${theme === "dark" ? "bg-[#111827] text-white" : "text-gray-900"}
+      `}>
+      <div className="p-6  min-h-screen flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-[#111827]">Team members</h1>
+        <h1 className="text-2xl font-semibold ">Team members</h1>
 
         {currentUser.role === "admin" && (
           <button
@@ -87,9 +90,19 @@ export default function Teams({ initialMembers, currentUser }: Props) {
 <TeamSearch search={search} setSearch={setSearch} setPage={setPage} />
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-x-auto">
+      <div className={`rounded-xl border overflow-x-auto
+            ${
+              theme === "dark"
+                ? "bg-[#1F2937] border-gray-700"
+                : "bg-white border-[#E5E7EB]"
+            }
+          `}>
         <table className="w-full table-fixed text-sm min-w-[700px]">
-          <thead className="bg-[#F3F4F6] text-[#6B7280]">
+          <thead className={`${
+                theme === "dark"
+                  ? "bg-[#111827] text-gray-400"
+                  : "bg-[#F3F4F6] text-[#6B7280]"
+              }`}>
             <tr>
               <th className="px-4 py-3 text-left">Member</th>
               <th className="px-4 py-3 text-left">Role</th>
@@ -109,7 +122,13 @@ export default function Teams({ initialMembers, currentUser }: Props) {
               const projects = ["#FCA5A5", "#93C5FD", "#FCD34D"];
 
               return (
-                <tr key={member._id} className="hover:bg-gray-50">
+                <tr key={member._id} className={`transition
+                      ${
+                        theme === "dark"
+                          ? "hover:bg-gray-800"
+                          : "hover:bg-gray-50"
+                      }
+                    `}>
                   {/* Member */}
                   <td className="px-4 py-3 align-middle">
                     <div className="flex items-center gap-3">
@@ -121,10 +140,16 @@ export default function Teams({ initialMembers, currentUser }: Props) {
                         className="rounded-full flex-shrink-0"
                       />
                       <div className="min-w-0">
-                        <div className="font-medium text-[#111827] truncate">
+                        <div className="font-medium truncate">
                           {member.name}
                         </div>
-                        <div className="text-xs text-[#6B7280] truncate">
+                        <div className={`text-xs truncate
+                              ${
+                                theme === "dark"
+                                  ? "text-gray-400"
+                                  : "text-[#6B7280]"
+                              }
+                            `}>
                           {member.email}
                         </div>
                       </div>
@@ -150,12 +175,24 @@ export default function Teams({ initialMembers, currentUser }: Props) {
                   </td>
 
                   {/* Location */}
-                  <td className="px-4 py-3 align-middle text-gray-600">
+                  <td className={`px-4 py-3 align-middle
+                        ${
+                          theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      `}>
                     {member.location || "—"}
                   </td>
 
                   {/* Permissions */}
-                  <td className="px-4 py-3 align-middle text-gray-600 text-xs">
+                  <td className={`px-4 py-3 align-middle text-xs
+                        ${
+                          theme === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }
+                      `}>
                     {member.permissions?.canEditVendor ? "Yes" : "No"}
                   </td>
 
@@ -165,11 +202,13 @@ export default function Teams({ initialMembers, currentUser }: Props) {
                       <button
                         disabled={isSelfAdmin}
                         onClick={() => setEditMember(member)}
-                        className={`px-3 py-1 rounded-lg text-sm transition transform hover:scale-105 cursor-pointer ${
-                          isSelfAdmin
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-indigo-600 text-white hover:bg-indigo-700"
-                        }`}
+                        className={`px-3 py-1 rounded-lg text-sm transition transform hover:scale-105 cursor-pointer
+                            ${
+                              isSelfAdmin
+                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                : "bg-indigo-600 text-white hover:bg-indigo-700"
+                            }
+                          `}
                       >
                         Manage
                       </button>
