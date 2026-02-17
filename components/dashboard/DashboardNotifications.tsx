@@ -46,7 +46,9 @@ export default function DashboardNotifications() {
         setLoading(true);
 
         const res = await fetch("/api/events");
+        console.log("Events API response:", res);
         const data = await res.json();
+        console.log("Events data parsed:", data);
 
         if (!Array.isArray(data)) {
           setUpcomingEvent(null);
@@ -70,6 +72,8 @@ export default function DashboardNotifications() {
           (e) => new Date(e.createdAt) >= weekAgo,
         );
 
+        console.log("Recent events (last 7 days):", recentEvents);
+
         const upcoming = recentEvents
           .filter((e) => new Date(e.startDate) > now)
           .sort(
@@ -79,12 +83,15 @@ export default function DashboardNotifications() {
 
         setUpcomingEvent(upcoming || null);
 
+        console.log("Upcoming event:", upcoming);
+
         setTodaysEvents(
           recentEvents.filter((e) => {
             const d = new Date(e.startDate);
             return d >= now && d <= tomorrow;
           }),
         );
+        
 
         setBudgetAlerts(
           recentEvents.filter((e) => e.totalBudget && e.totalBudget > 10000),
@@ -104,7 +111,9 @@ export default function DashboardNotifications() {
         );
 
         const tasksRes = await fetch("/api/tasks?status=pending");
+          console.log("Tasks API response:", tasksRes);
         const tasksData = await tasksRes.json();
+        console.log("Tasks data parsed:", tasksData);
         setPendingTasks(Array.isArray(tasksData) ? tasksData : []);
       } catch (err) {
         console.error("Failed to fetch notifications", err);
