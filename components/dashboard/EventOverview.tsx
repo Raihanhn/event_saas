@@ -2,14 +2,15 @@
 
 "use client";
 
+import dynamic from "next/dynamic";
 import React, { useEffect, useState, useMemo } from "react";
 import EventSelector, { EventOption } from "@/modules/budgets/ui/EventSelector";
 import { BudgetItem } from "@/modules/budgets/ui/BudgetCard";
-import BudgetPieChart from "@/modules/budgets/ui/BudgetPieChart";
-import ActualBudgetPieChart from "@/modules/budgets/ui/ActualBudgetPieChart";
-import BudgetLineChart from "@/modules/budgets/ui/BudgetLineChart";
-import VendorOverview from "@/modules/budgets/ui/VendorOverview";
 import { useThemeContext } from "@/context/ThemeContext";
+
+const BudgetPieChart = dynamic(() => import("@/modules/budgets/ui/BudgetPieChart"), { ssr: false });
+const ActualBudgetPieChart = dynamic(() => import("@/modules/budgets/ui/ActualBudgetPieChart"), { ssr: false });
+const VendorOverview = dynamic(() => import("@/modules/budgets/ui/VendorOverview"), { ssr: false });
 
 interface EventDetails {
    _id: string;
@@ -133,10 +134,6 @@ export default function EventOverview({ role }: Props) {
               <ActualBudgetPieChart budgets={budgets} />
             </ChartBox>
           </div>
-
-          {/* <ChartBox>
-            <BudgetLineChart budgets={budgets} />
-          </ChartBox> */}
 
           {vendorRows.length > 0 && (
               <div className=" mt-32">
