@@ -38,10 +38,13 @@ export default function DashboardNotifications() {
   const [pendingTasks, setPendingTasks] = useState<TaskItem[]>([]);
   const [flexibleReminders, setFlexibleReminders] = useState<EventItem[]>([]);
   const [newEvents, setNewEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchNotifications() {
       try {
+        setLoading(true);
+
         const res = await fetch("/api/events");
         const data = await res.json();
 
@@ -63,28 +66,41 @@ export default function DashboardNotifications() {
         const tomorrow = new Date();
         tomorrow.setDate(now.getDate() + 1);
 
-        const recentEvents = events.filter(e => new Date(e.createdAt) >= weekAgo);
+        const recentEvents = events.filter(
+          (e) => new Date(e.createdAt) >= weekAgo,
+        );
 
         const upcoming = recentEvents
-          .filter(e => new Date(e.startDate) > now)
-          .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())[0];
+          .filter((e) => new Date(e.startDate) > now)
+          .sort(
+            (a, b) =>
+              new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+          )[0];
 
         setUpcomingEvent(upcoming || null);
 
         setTodaysEvents(
-          recentEvents.filter(e => {
+          recentEvents.filter((e) => {
             const d = new Date(e.startDate);
             return d >= now && d <= tomorrow;
-          })
+          }),
         );
 
-        setBudgetAlerts(recentEvents.filter(e => e.totalBudget && e.totalBudget > 10000));
-        setFlexibleReminders(recentEvents.filter(e => e.isFlexible && new Date(e.startDate) > now));
+        setBudgetAlerts(
+          recentEvents.filter((e) => e.totalBudget && e.totalBudget > 10000),
+        );
+        setFlexibleReminders(
+          recentEvents.filter(
+            (e) => e.isFlexible && new Date(e.startDate) > now,
+          ),
+        );
 
         setNewEvents(
           recentEvents.filter(
-            e => now.getTime() - new Date(e.createdAt).getTime() < 48 * 60 * 60 * 1000
-          )
+            (e) =>
+              now.getTime() - new Date(e.createdAt).getTime() <
+              48 * 60 * 60 * 1000,
+          ),
         );
 
         const tasksRes = await fetch("/api/tasks?status=pending");
@@ -98,6 +114,8 @@ export default function DashboardNotifications() {
         setFlexibleReminders([]);
         setNewEvents([]);
         setPendingTasks([]);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -107,7 +125,8 @@ export default function DashboardNotifications() {
   const formatDateTime = (dateStr: string, timeStr?: string) => {
     const date = new Date(dateStr);
     return `${date.toLocaleDateString()} • ${
-      timeStr || date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      timeStr ||
+      date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     }`;
   };
 
@@ -141,9 +160,11 @@ export default function DashboardNotifications() {
     <div
       className={`
         shadow-lg rounded-2xl p-6 h-full
-        ${theme === "dark"
-          ? "bg-[#374151] border border-gray-700"
-          : "bg-[#F3F4F6] border border-gray-200"}
+        ${
+          theme === "dark"
+            ? "bg-[#374151] border border-gray-700"
+            : "bg-[#F3F4F6] border border-gray-200"
+        }
       `}
     >
       <h2
@@ -155,60 +176,81 @@ export default function DashboardNotifications() {
       </h2>
 
       {/* 🔒 ORIGINAL SCROLLBAR — NOT TOUCHED */}
-      <div className="space-y-4 max-h-[calc(4*3rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        {(hasRealData ? (upcomingEvent ? [upcomingEvent] : []) : [dummyEvent]).map(e => (
-          <div key={e._id} className="border-l-4 border-indigo-500 pl-4">
-            <p className="text-sm font-medium">Next Upcoming Event</p>
-            <p className="text-xs text-gray-500">
-              {e.name} • {formatDateTime(e.startDate, e.startTime)}
-            </p>
+      <div className=" relative space-y-4 max-h-[calc(4*3rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        {loading ? (
+          <div className="flex items-center justify-center h-40">
+            <div
+              className={`h-8 w-8 rounded-full border-4 animate-spin
+        ${
+          theme === "dark"
+            ? "border-gray-600 border-t-white"
+            : "border-gray-300 border-t-gray-900"
+        }`}
+            />
           </div>
-        ))}
+        ) : (
+          <div className="space-y-4">
+            {(hasRealData
+              ? upcomingEvent
+                ? [upcomingEvent]
+                : []
+              : [dummyEvent]
+            ).map((e) => (
+              <div key={e._id} className="border-l-4 border-indigo-500 pl-4">
+                <p className="text-sm font-medium">Next Upcoming Event</p>
+                <p className="text-xs text-gray-500">
+                  {e.name} • {formatDateTime(e.startDate, e.startTime)}
+                </p>
+              </div>
+            ))}
 
-        {(hasRealData ? todaysEvents : [dummyEvent]).map(e => (
-          <div key={e._id} className="border-l-4 border-green-500 pl-4">
-            <p className="text-sm font-medium">Event Today / Tomorrow</p>
-            <p className="text-xs text-gray-500">
-              {e.name} • {formatDateTime(e.startDate, e.startTime)}
-            </p>
-          </div>
-        ))}
+            {(hasRealData ? todaysEvents : [dummyEvent]).map((e) => (
+              <div key={e._id} className="border-l-4 border-green-500 pl-4">
+                <p className="text-sm font-medium">Event Today / Tomorrow</p>
+                <p className="text-xs text-gray-500">
+                  {e.name} • {formatDateTime(e.startDate, e.startTime)}
+                </p>
+              </div>
+            ))}
 
-        {(hasRealData ? budgetAlerts : [dummyEvent]).map(e => (
-          <div key={e._id} className="border-l-4 border-amber-500 pl-4">
-            <p className="text-sm font-medium">Budget Alert</p>
-            <p className="text-xs text-gray-500">
-              {e.name} • Budget: ${e.totalBudget?.toLocaleString() || "5,000"}
-            </p>
-          </div>
-        ))}
+            {(hasRealData ? budgetAlerts : [dummyEvent]).map((e) => (
+              <div key={e._id} className="border-l-4 border-amber-500 pl-4">
+                <p className="text-sm font-medium">Budget Alert</p>
+                <p className="text-xs text-gray-500">
+                  {e.name} • Budget: $
+                  {e.totalBudget?.toLocaleString() || "5,000"}
+                </p>
+              </div>
+            ))}
 
-        {(hasRealData ? pendingTasks : [dummyTask]).map(t => (
-          <div key={t._id} className="border-l-4 border-red-500 pl-4">
-            <p className="text-sm font-medium">Pending Task</p>
-            <p className="text-xs text-gray-500">
-              {t.title} for {t.event.name}
-            </p>
-          </div>
-        ))}
+            {(hasRealData ? pendingTasks : [dummyTask]).map((t) => (
+              <div key={t._id} className="border-l-4 border-red-500 pl-4">
+                <p className="text-sm font-medium">Pending Task</p>
+                <p className="text-xs text-gray-500">
+                  {t.title} for {t.event.name}
+                </p>
+              </div>
+            ))}
 
-        {(hasRealData ? flexibleReminders : [dummyEvent]).map(e => (
-          <div key={e._id} className="border-l-4 border-cyan-500 pl-4">
-            <p className="text-sm font-medium">Flexible Event Reminder</p>
-            <p className="text-xs text-gray-500">
-              {e.name} • {formatDateTime(e.startDate, e.startTime)}
-            </p>
-          </div>
-        ))}
+            {(hasRealData ? flexibleReminders : [dummyEvent]).map((e) => (
+              <div key={e._id} className="border-l-4 border-cyan-500 pl-4">
+                <p className="text-sm font-medium">Flexible Event Reminder</p>
+                <p className="text-xs text-gray-500">
+                  {e.name} • {formatDateTime(e.startDate, e.startTime)}
+                </p>
+              </div>
+            ))}
 
-        {(hasRealData ? newEvents : [dummyEvent]).map(e => (
-          <div key={e._id} className="border-l-4 border-purple-500 pl-4">
-            <p className="text-sm font-medium">New Event Created</p>
-            <p className="text-xs text-gray-500">
-              {e.name} • {formatDateTime(e.startDate, e.startTime)}
-            </p>
+            {(hasRealData ? newEvents : [dummyEvent]).map((e) => (
+              <div key={e._id} className="border-l-4 border-purple-500 pl-4">
+                <p className="text-sm font-medium">New Event Created</p>
+                <p className="text-xs text-gray-500">
+                  {e.name} • {formatDateTime(e.startDate, e.startTime)}
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
