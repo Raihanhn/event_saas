@@ -1,14 +1,16 @@
 // pages/dashboard/index.tsx
 
+import dynamic from "next/dynamic";
 import { connectDB } from "@/lib/mongodb";
 import { requireAuthServerSide } from "@/lib/auth";
 import Event from "@/modules/events/event.model";
 import Client from "@/modules/clients/client.model";
 import User from "@/modules/users/user.model";
 import Vendor from "@/modules/vendors/vendor.model";
-import EventOverview from "@/components/dashboard/EventOverview";
 import DashboardCards from "@/components/dashboard/DashboardCards";
-import DashboardNotifications from "@/components/dashboard/DashboardNotifications";
+
+const DashboardNotifications = dynamic(() => import("@/components/dashboard/DashboardNotifications"), { ssr: false });
+const EventOverview = dynamic(() => import("@/components/dashboard/EventOverview"), { ssr: false });
 
 interface Counts {
   eventsCount: number;
