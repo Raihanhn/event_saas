@@ -49,13 +49,15 @@ export default function SigninContent() {
       {/* Background image */}
 
       <div className="absolute inset-0 ">
-        <Image
-          src="/sign/signin.jpg"
-          alt="Signin background"
-          fill
-          priority
-          className="object-cover scale-105"
-        />
+        <div className="relative w-full h-full">
+          <Image
+            src="/sign/signin.jpg"
+            alt="Signin background"
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
       </div>
 
       <div

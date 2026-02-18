@@ -8,24 +8,23 @@ export default requireAuth(async function handler(
   req: NextApiRequest & { user?: any },
   res: NextApiResponse
 ) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
-  await connectDB();
-
-  const { organization } = req.user!;
-
   try {
-      console.log("Fetching tasks for org:", req.user?.organization);
+    if (req.method !== "GET") {
+      return res.status(405).json({ message: "Method not allowed" });
+    }
+
+    await connectDB();
+
+    if (!req.user || !req.user.organization) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const tasks = await Task.find({
-       organization: req.user.organization
+      organization: req.user.organization,
     })
       .populate("event", "_id name startDate endDate")
-      .populate("vendors", "_id name") 
+      .populate("vendors", "_id name")
       .lean();
-
-        console.log("Tasks fetched:", tasks.length);
 
     return res.status(200).json(tasks);
   } catch (error) {
@@ -33,3 +32,4 @@ export default requireAuth(async function handler(
     return res.status(500).json({ message: "Server error" });
   }
 });
+

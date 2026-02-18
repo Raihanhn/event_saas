@@ -4,42 +4,54 @@ import Budget from "@/modules/budgets/budget.model";
 import { requireAuth } from "@/lib/auth";
 
 export default requireAuth(async (req: any, res: any) => {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
+  try {
+    if (req.method !== "GET") {
+      return res.status(405).json({ message: "Method not allowed" });
+    }
 
-  await connectDB();
+    await connectDB();
 
-  const { eventId } = req.query;
-  if (!eventId) {
-    return res.status(400).json({ message: "Event ID required" });
-  }
+    if (!req.user || !req.user.organization) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-  const budgets = await Budget.find({
-    event: eventId,
-    organization: req.user.organization,
-  })
-    .populate("subcategories.vendors.vendor", "name avatar")
-    .lean();
+    const { eventId } = req.query;
+    if (!eventId) {
+      return res.status(400).json({ message: "Event ID required" });
+    }
 
-  const rows: any[] = [];
+    const budgets = await Budget.find({
+      event: eventId,
+      organization: req.user.organization,
+    })
+      .populate("subcategories.vendors.vendor", "name avatar")
+      .lean();
 
-  budgets.forEach((b) => {
-    b.subcategories?.forEach((s: any) => {
-      s.vendors?.forEach((v: any) => {
-        rows.push({
-          vendorId: v.vendor._id,
-          name: v.vendor.name,
-          avatar: v.vendor.avatar,
-          task: s.name,
-          totalCost: s.actualAmount || 0,
-          paid: v.amount || 0,
-          budgetId: b._id,
-          subcategoryName: s.name,
+    const rows: any[] = [];
+
+    budgets.forEach((b) => {
+      b.subcategories?.forEach((s: any) => {
+        s.vendors?.forEach((v: any) => {
+          if (!v.vendor) return; // 🔒 PREVENT CRASH
+
+          rows.push({
+            vendorId: v.vendor._id,
+            name: v.vendor.name,
+            avatar: v.vendor.avatar,
+            task: s.name,
+            totalCost: s.actualAmount || 0,
+            paid: v.amount || 0,
+            budgetId: b._id,
+            subcategoryName: s.name,
+          });
         });
       });
     });
-  });
 
-  return res.status(200).json(rows);
-});
+    return res.status(200).json(rows);
+  } catch (err) {
+    console.error("Vendor overview error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});  
+
