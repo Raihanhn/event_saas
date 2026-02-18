@@ -2,6 +2,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import Image from "next/image";
 
 const services = [
   {
@@ -98,12 +99,25 @@ export default function ServicesContent() {
             viewport={{ once: true, amount: 0.3 }}
           >
             {/* Image */}
-            <motion.img
+            {/* <motion.img
               src={s.image}
               alt={s.title}
               className="rounded-2xl shadow-lg w-full md:w-1/2 object-cover"
               variants={imageVariants}
-            />
+            /> */}
+
+             <motion.div
+              className="relative w-full md:w-1/2 aspect-[16/9] rounded-2xl shadow-lg overflow-hidden"
+              variants={imageVariants}
+            >
+              <Image
+                src={s.image}
+                alt={s.title}
+                fill
+                className="object-cover"
+                priority={i === 0} // first image loads instantly
+              />
+            </motion.div>
 
             {/* Text */}
             <motion.div
