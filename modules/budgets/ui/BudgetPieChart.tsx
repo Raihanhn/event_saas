@@ -66,7 +66,7 @@ const BudgetPieChart: React.FC<Props> = ({ budgets }) => {
   const CenterLabel = ({ viewBox }: any) => {
     const { cx, cy, width } = viewBox;
      const valueSize =
-    Number.isFinite(width) && width > 0 ? Math.min(22, width / 10) : 12;
+     Number.isFinite(width) && width > 0 ? Math.min(22, width / 10) : 12;
 
     return (
       <g>

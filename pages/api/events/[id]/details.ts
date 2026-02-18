@@ -14,8 +14,9 @@ const Client =
 export default requireAuth(
   async (req: NextApiRequest & { user?: any }, res: NextApiResponse) => {
     const { id } = req.query;
+    const eventId = Array.isArray(id) ? id[0] : id;
 
-    if (!Types.ObjectId.isValid(id as string)) {
+    if (!eventId || !Types.ObjectId.isValid(eventId)) {
       return res.status(400).json({ message: "Invalid event ID" });
     }
 
@@ -23,7 +24,7 @@ export default requireAuth(
 
     try {
       const event = await Event.findOne({
-        _id: id,
+        _id: eventId,
         organization: req.user.organization,
       })
         .select("name startDate endDate isFlexible totalBudget clients")
@@ -34,7 +35,7 @@ export default requireAuth(
 
       /* ✅ Count tasks for this event */
       const tasksCount = await Task.countDocuments({
-        event: id,
+        event: eventId,
         organization: req.user.organization,
       });
 

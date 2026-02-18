@@ -35,10 +35,6 @@ export default requireAuth(async (req: AuthRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: "Invalid event ID" });
   }
 
-  // if (!Types.ObjectId.isValid(id as string)) {
-  //   return res.status(400).json({ message: "Invalid event ID" });
-  // }
-
   // ======================
   // UPDATE EVENT (PATCH)
   // ======================

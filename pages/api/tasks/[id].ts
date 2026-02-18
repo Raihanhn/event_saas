@@ -22,11 +22,11 @@ interface AuthRequest extends NextApiRequest {
 export default requireAuth(async (req: AuthRequest, res: NextApiResponse) => {
   await connectDB();
   const { id } = req.query;
+  const taskId = Array.isArray(id) ? id[0] : id;
 
-  if (!Types.ObjectId.isValid(id as string)) {
+  if (!taskId || !Types.ObjectId.isValid(taskId)) {
     return res.status(400).json({ message: "Invalid task ID" });
   }
-
   if (req.method === "PATCH") {
     try {
       const { _id, ...payload } = req.body;
@@ -47,7 +47,7 @@ export default requireAuth(async (req: AuthRequest, res: NextApiResponse) => {
 
       // Make sure organization is included for security
       const updated = await Task.findOneAndUpdate(
-        { _id: id, organization: req.user.organization },
+        { _id: taskId, organization: req.user.organization },
         {
           ...payload,
           startTime: payload.startTime,
@@ -71,7 +71,7 @@ export default requireAuth(async (req: AuthRequest, res: NextApiResponse) => {
   if (req.method === "DELETE") {
     try {
       const deleted = await Task.findOneAndDelete({
-        _id: id,
+        _id: taskId,
         organization: req.user.organization,
       });
 
