@@ -192,11 +192,11 @@ function DraggableEvent({
     : "bg-white text-gray-900 shadow-sm hover:shadow-md"}
 `}
     >
-      <p className="font-medium truncate">{item.title}</p>
+      <p className="font-medium text-gray-700 truncate">{item.title}</p>
 
       <div className="flex justify-between items-center mt-1">
         <span  className={`text-[10px] ${
-        theme === "dark" ? "text-gray-400" : "text-gray-600"
+        theme === "dark" ? "text-gray-600" : "text-gray-600"
       }`}>
           {item.startTime}
           {item.endTime && ` – ${item.endTime}`}

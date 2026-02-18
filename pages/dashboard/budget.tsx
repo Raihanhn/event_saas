@@ -210,52 +210,62 @@ export default function BudgetPage() {
     { title: "Remaining / Overrun", value: "$11,800" },
   ];
 
-      const updateVendorPaid = async (row: VendorRow, paid: number) => {
-      await fetch(`/api/budgets/${row.budgetId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subcategoryVendorUpdate: {
-            subcategoryName: row.subcategoryName,
-            vendorId: row.vendorId,
-            amount: paid,
-          },
-        }),
-      });
-     };
+  const updateVendorPaid = async (row: VendorRow, paid: number) => {
+    await fetch(`/api/budgets/${row.budgetId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        subcategoryVendorUpdate: {
+          subcategoryName: row.subcategoryName,
+          vendorId: row.vendorId,
+          amount: paid,
+        },
+      }),
+    });
+  };
 
-    const vendorOverviewData: VendorRow[] = useMemo(() => {
-  const rows: VendorRow[] = [];
+  const vendorOverviewData: VendorRow[] = useMemo(() => {
+    const rows: VendorRow[] = [];
 
-  budgets.forEach((b) => {
-    b.subcategories?.forEach((s) => {
-      s.vendors?.forEach((v) => {
-        const vendor = vendors.find((vd) => vd._id.toString() === v.vendor.toString());
-        if (!vendor) return;
+    budgets.forEach((b) => {
+      b.subcategories?.forEach((s) => {
+        s.vendors?.forEach((v) => {
+          const vendor = vendors.find(
+            (vd) => vd._id.toString() === v.vendor.toString(),
+          );
+          if (!vendor) return;
 
-        rows.push({
-          vendorId: v.vendor,
-          name: vendor.name,
-          avatar: (vendor as any).avatar,
-          task: s.name,
-          totalCost: s.actualAmount || 0,
-          paid: v.amount || 0,
-          budgetId: b._id,
-          subcategoryName: s.name,
+          rows.push({
+            vendorId: v.vendor,
+            name: vendor.name,
+            avatar: (vendor as any).avatar,
+            task: s.name,
+            totalCost: s.actualAmount || 0,
+            paid: v.amount || 0,
+            budgetId: b._id,
+            subcategoryName: s.name,
+          });
         });
       });
     });
-  });
 
-  return rows;
-     }, [budgets, vendors]);
+    return rows;
+  }, [budgets, vendors]);
 
-
+  if (loading || !selectedEvent || !eventDetails) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-500">
+        Loading budgets…
+      </div>
+    );
+  }
 
   return (
-    <div  className={`p-6 h-screen space-y-6
+    <div
+      className={`p-6 h-screen space-y-6
         ${theme === "dark" ? "bg-[#111827] text-gray-200" : "bg-white text-gray-900"}
-      `}>
+      `}
+    >
       {/* <h1 className="text-2xl font-semibold">Event Budgets</h1> */}
 
       {/* Top Header Row */}
@@ -275,9 +285,11 @@ export default function BudgetPage() {
       {/* Clients Row */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         {eventDetails && (
-          <div className={`flex items-center gap-2 p-2 rounded-xl shadow
+          <div
+            className={`flex items-center gap-2 p-2 rounded-xl shadow
             ${theme === "dark" ? "bg-[#1F2937]" : "bg-gray-50"}
-          `}>
+          `}
+          >
             <span className=" font-medium opacity-70">Clients:</span>
 
             {eventDetails?.clients?.map((c, idx) => (
@@ -359,7 +371,7 @@ export default function BudgetPage() {
       {/* Event Details */}
       {/* ------------------ */}
 
-      {loading && <p className="text-gray-500">Loading budgets…</p>}
+      {/* {loading && <p className="text-gray-500">Loading budgets…</p>} */}
 
       {/* ------------------ */}
       {/* Charts */}
@@ -372,7 +384,7 @@ export default function BudgetPage() {
       <BudgetLineChart budgets={budgets.length > 0 ? budgets : []} />
 
       {/* Budget Cards */}
-      {loading && <p>Loading…</p>}
+      {/* {loading && <p>Loading…</p>} */}
       {(budgets.length ? budgets : []).map((b) => (
         <BudgetCard
           key={b._id}
@@ -389,13 +401,12 @@ export default function BudgetPage() {
       {/* ------------------ */}
       {/* Vendor Overview */}
       {/* ------------------ */}
-     <VendorOverview
-      vendors={vendorOverviewData}
-  onUpdatePaid={updateVendorPaid}
-  />
+      <VendorOverview
+        vendors={vendorOverviewData}
+        onUpdatePaid={updateVendorPaid}
+      />
 
-   <div className="h-56"></div>
-
+      <div className="h-56"></div>
     </div>
   );
 }
