@@ -17,12 +17,15 @@ export default requireAuth(async function handler(
   const { organization } = req.user!;
 
   try {
+      console.log("Fetching tasks for org:", req.user?.organization);
     const tasks = await Task.find({
-      organization, // 🔐 tenant isolation
+       organization: req.user.organization
     })
       .populate("event", "_id name startDate endDate")
       .populate("vendors", "_id name") 
       .lean();
+
+        console.log("Tasks fetched:", tasks.length);
 
     return res.status(200).json(tasks);
   } catch (error) {

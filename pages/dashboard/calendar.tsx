@@ -32,67 +32,130 @@ export default function CalendarPage() {
   const [editingItem, setEditingItem] = useState<CalendarItem | null>(null);
 
   // 🔄 Load events, tasks, vendors
+  // useEffect(() => {
+  //   async function loadCalendar() {
+  //     setLoading(true);
+  //     try {
+  //       const [eventsRes, tasksRes, vendorsRes] = await Promise.all([
+  //         fetch("/api/calendar/events"),
+  //         fetch("/api/tasks"),
+  //         fetch("/api/vendors"),
+  //       ]);
+
+  //       if (!eventsRes.ok || !tasksRes.ok || !vendorsRes.ok)
+  //         throw new Error("API fetch failed");
+
+  //       const [events, tasks, vendors] = await Promise.all([
+  //         eventsRes.json(),
+  //         tasksRes.json(),
+  //         vendorsRes.json(),
+  //       ]);
+  //       const normalizedVendors = vendors.map((v: any) => ({
+  //         id: v._id, 
+  //         name: v.name,
+  //         avatar: v.avatar,
+  //       }));
+
+  //       console.log("VENDORS RAW FROM API:", vendors);
+
+  //       const normalizedTasks = tasks.map((t: any) => ({
+  //         ...t,
+  //         vendors: Array.isArray(t.vendors)
+  //           ? t.vendors.map((v: any) =>
+  //               typeof v === "string" ? v : String(v._id),
+  //             )
+  //           : [],
+  //       }));
+
+  //       setEventsData(events);
+  //       setTasksData(normalizedTasks);
+  //       setAllVendors(normalizedVendors);
+
+  //       const newestEvent = [...events].sort(
+  //         (a, b) =>
+  //           new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+  //       )[0];
+
+  //       if (newestEvent) setSelectedEvent(newestEvent._id);
+  //     } catch (err) {
+  //       console.error("Calendar load failed:", err);
+  //       setEventsData([]);
+  //       setTasksData([]);
+  //       setAllVendors([]);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   loadCalendar();
+  // }, []);
+
   useEffect(() => {
-    async function loadCalendar() {
-      setLoading(true);
-      try {
-        const [eventsRes, tasksRes, vendorsRes] = await Promise.all([
-          fetch("/api/calendar/events"),
-          fetch("/api/tasks"),
-          fetch("/api/vendors"),
-        ]);
+  let cancelled = false; // ✅ prevent state updates on unmounted component
 
-        if (!eventsRes.ok || !tasksRes.ok || !vendorsRes.ok)
-          throw new Error("API fetch failed");
+  async function loadCalendar() {
+    setLoading(true);
 
-        const [events, tasks, vendors] = await Promise.all([
-          eventsRes.json(),
-          tasksRes.json(),
-          vendorsRes.json(),
-        ]);
+    try {
+      const [eventsRes, tasksRes, vendorsRes] = await Promise.all([
+        fetch("/api/calendar/events"),
+        fetch("/api/tasks"),
+        fetch("/api/vendors"),
+      ]);
 
-        // ✅ Normalize vendors here
-        const normalizedVendors = vendors.map((v: any) => ({
-          id: v._id, // use _id from backend
-          name: v.name,
-          avatar: v.avatar,
-          // avatar: v.avatar,
-        }));
+      if (!eventsRes.ok || !tasksRes.ok || !vendorsRes.ok)
+        throw new Error("API fetch failed");
 
-        console.log("VENDORS RAW FROM API:", vendors);
+      const [events, tasks, vendors] = await Promise.all([
+        eventsRes.json(),
+        tasksRes.json(),
+        vendorsRes.json(),
+      ]);
 
-        const normalizedTasks = tasks.map((t: any) => ({
-          ...t,
-          vendors: Array.isArray(t.vendors)
-            ? t.vendors.map((v: any) =>
-                typeof v === "string" ? v : String(v._id),
-              )
-            : [],
-        }));
+      if (cancelled) return;
 
-        setEventsData(events);
-        // setTasksData(tasks);
-        setTasksData(normalizedTasks);
-        setAllVendors(normalizedVendors);
+      // normalize vendors
+      const normalizedVendors = vendors.map((v: any) => ({
+        id: v._id,
+        name: v.name,
+        avatar: v.avatar,
+      }));
 
-        // 🔹 default: latest event
+      // normalize tasks
+      const normalizedTasks = tasks.map((t: any) => ({
+        ...t,
+        vendors: Array.isArray(t.vendors)
+          ? t.vendors.map((v: any) => (typeof v === "string" ? v : String(v._id)))
+          : [],
+      }));
+
+      setEventsData(events);
+      setTasksData(normalizedTasks);
+      setAllVendors(normalizedVendors);
+
+      // set default selected event only if none selected
+      if (!selectedEvent && events.length > 0) {
         const newestEvent = [...events].sort(
-          (a, b) =>
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+          (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
         )[0];
-
-        if (newestEvent) setSelectedEvent(newestEvent._id);
-      } catch (err) {
-        console.error("Calendar load failed:", err);
-        setEventsData([]);
-        setTasksData([]);
-        setAllVendors([]);
-      } finally {
-        setLoading(false);
+        setSelectedEvent(newestEvent._id);
       }
+    } catch (err) {
+      console.error("Calendar load failed:", err);
+      setEventsData([]);
+      setTasksData([]);
+      setAllVendors([]);
+    } finally {
+      if (!cancelled) setLoading(false);
     }
-    loadCalendar();
-  }, []);
+  }
+
+  loadCalendar();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
 
   // 🔹 Prepare displayed tasks only for selected event
   const displayedItems: CalendarItem[] = useMemo(() => {
@@ -202,6 +265,15 @@ export default function CalendarPage() {
       console.error("Delete failed:", e);
     }
   };
+
+  if (loading || !selectedEvent || eventsData.length === 0) {
+  return (
+    <div className="flex justify-center items-center h-full text-gray-500">
+      Loading calendar…
+    </div>
+  );
+}
+
 
 
   return (
