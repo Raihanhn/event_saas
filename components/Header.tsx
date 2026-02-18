@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import MobileSidebar from "./MobileSidebar";
 import { useThemeContext } from "@/context/ThemeContext";
-import { adminMenu, teamMenu } from "@/components/sidebarmenu/menu"; // ✅ import menus
+import { adminMenu, teamMenu } from "@/components/sidebarmenu/menu";
 
 export default function Header() {
   const router = useRouter();
@@ -51,7 +51,8 @@ export default function Header() {
       >
         {/* Hamburger Menu (Mobile Only) */}
         <button
-          className="md:hidden p-2 text-gray-700 dark:text-gray-300 mr-2"
+          className={`md:hidden p-2  mr-2 
+             ${theme === "dark" ? "bg-gray-800 text-gray-200 " : "bg-white text-gray-600 "} `}
           onClick={(e) => {
             e.stopPropagation(); // prevent avatar click
             setMobileSidebarOpen(true);
