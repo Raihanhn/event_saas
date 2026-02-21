@@ -2,6 +2,8 @@
 import { connectDB } from "@/lib/mongodb";
 import Budget from "@/modules/budgets/budget.model";
 import { requireAuth } from "@/lib/auth";
+import "@/modules/vendors/vendor.model";
+
 
 export default requireAuth(async (req: any, res: any) => {
   try {
