@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "@/lib/mongodb";
 import Task from "@/modules/tasks/task.model";
+import "@/modules/vendors/vendor.model";
 import { requireAuth } from "@/lib/auth";
 
 export default requireAuth(async function handler(
