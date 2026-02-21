@@ -2,6 +2,7 @@
 
 import { connectDB } from "@/lib/mongodb";
 import Task from "@/modules/tasks/task.model";
+import "@/modules/vendors/vendor.model";
 import { requireAuth } from "@/lib/auth";
 import mongoose from "mongoose";
 
