@@ -1,3 +1,4 @@
+//pages/api/stripe/manage.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { stripe } from "@/lib/stripe";
 import { requireAuth } from "@/lib/auth";

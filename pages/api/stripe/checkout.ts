@@ -1,3 +1,4 @@
+//pages/api/stripe/checkout
 import type { NextApiRequest, NextApiResponse } from "next";
 import { stripe, STRIPE_PRICE_IDS } from "@/lib/stripe";
 import { requireAuth } from "@/lib/auth";
