@@ -73,14 +73,14 @@ export default function SignupWizard() {
         return;
       }
 
-      // Paid plan → Stripe checkout
-      const stripeRes = await axios.post("/api/stripe/checkout", { plan: form.plan });
+      // Paid plan → Paddle checkout
+      const paddleRes = await axios.post("/api/paddle/checkout", { plan: form.plan });
 
-      if (stripeRes.data?.url) {
-        setLoadingText("Redirecting to Stripe...");
-        window.location.href = stripeRes.data.url;
+      if (paddleRes.data?.url) {
+        setLoadingText("Redirecting to Paddle...");
+        window.location.href = paddleRes.data.url;
       } else {
-        throw new Error("Unable to start Stripe checkout");
+        throw new Error("Unable to start Paddle checkout");
       }
     } catch (err: any) {
       console.error(err);

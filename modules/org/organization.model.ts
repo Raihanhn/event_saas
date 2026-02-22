@@ -10,11 +10,10 @@ export interface IOrganization extends Document {
   website?: string;
   businessSize?: string;
   plan: "free" | "growth" | "studio";
-  // stripeCustomerId?: string;
-  // stripeSubscriptionId?: string;
-  // stripePriceId?: string;
+  paddleCustomerId?: string;
   paddleSubscriptionId?: string;
-  paddleProductId?: string;
+  paddlePriceId?: string;
+  subscriptionStatus?: "active" | "canceled" | "past_due" | null;
   admin: mongoose.Types.ObjectId;
 }
 
@@ -28,11 +27,10 @@ const OrganizationSchema = new Schema(
     website: String,
     businessSize: String,
     plan: { type: String, default: "free" },
-    // stripeCustomerId: String,
-    // stripeSubscriptionId: String,
-    // stripePriceId: String,
+   paddleCustomerId: String,
     paddleSubscriptionId: String,
-    paddleProductId: String,
+    paddlePriceId: String,
+    subscriptionStatus: { type: String, enum: ["active", "canceled", "past_due", null], default: null },
     admin: { type: mongoose.Types.ObjectId, ref: "User" },
   },
   { timestamps: true },
